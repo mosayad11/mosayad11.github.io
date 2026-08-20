@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Welcome</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+
+    margin:0;
+    display:grid;
+    place-items:center;
+    height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f2027,
+        #203a43,
+        #2c5364
+    );
+
+    font-family:Arial;
+
+}
+
+.card{
+
+    width:340px;
+    padding:30px;
+
+    border-radius:20px;
+
+    background:#ffffff15;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:0 0 30px #0006;
+
+    text-align:center;
+
+    color:white;
+
+    animation:up .7s;
+
+}
+
+@keyframes up{
+
+from{
+
+opacity:0;
+transform:translateY(35px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+.logo{
+
+    font-size:55px;
+
+}
+
+h2{
+
+    margin:10px 0;
+
+}
+
+p{
+
+    color:#ddd;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-top:15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#ffffff20;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+input::placeholder{
+
+    color:#ddd;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-top:15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#00d4ff;
+
+    color:black;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    transform:scale(1.03);
+
+    box-shadow:0 0 20px cyan;
+
+}
+
+#msg{
+
+    margin-top:15px;
+    min-height:22px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card" id="loginCard">
+
+<div class="logo">
+🎮
+</div>
+
+<h2>
+Welcome to Mosayad Games
+</h2>
+
+<p>
+Enter your name to continue.
+</p>
+
+<input
+id="name"
+maxlength="25"
+placeholder="Your Name"
+>
+
+<button id="enterBtn">
+Login
+</button>
+
+<p id="msg"></p>
+
+</div>
+
+<audio id="click-sound" preload="auto">
+
+        <source src="sounds/click.mp3" type="audio/mpeg">
+
+    </audio>
+
+    <audio id="hover-sound" preload="auto">
+
+        <source src="sounds/hover.mp3" type="audio/mpeg">
+
+    </audio>
+
+
+<script type="module">
+
+import { db } from "./js/firebase.js";
+
+import {
+
+collection,
+addDoc,
+serverTimestamp
+
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+const card=document.getElementById("loginCard");
+
+const input=document.getElementById("name");
+
+const msg=document.getElementById("msg");
+
+const btn=document.getElementById("enterBtn");
+
+if(localStorage.getItem("userId")){
+
+    window.location.href="index.html";
+
+}
+
+btn.onclick=async()=>{
+
+    let name=input.value.trim();
+
+    if(name===""){
+
+        msg.innerHTML="❌ Please enter your name.";
+
+        return;
+
+    }
+
+    btn.disabled=true;
+
+    btn.textContent="Loading...";
+
+    try{
+
+        const ref=await addDoc(
+
+            collection(db,"users"),
+
+            {
+
+                name:name,
+
+                joined:serverTimestamp(),
+
+                likes:0,
+
+                downloads:0
+
+            }
+
+        );
+
+        localStorage.setItem("userId",ref.id);
+
+        localStorage.setItem("userName",name);
+
+        msg.innerHTML="✅ Welcome "+name;
+
+        setTimeout(()=>{
+
+            window.location.href="index.html";
+
+        },700);
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        msg.innerHTML="❌ Something went wrong.";
+
+        btn.disabled=false;
+
+        btn.textContent="Continue";
+
+    }
+
+};
+
+input.addEventListener("keydown",e=>{
+
+    if(e.key==="Enter"){
+
+        btn.click();
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
