@@ -1,0 +1,85 @@
+[
+    {
+        "id": "maze",
+        "name": "Dark Maze",
+        "image": "images/maze.png",
+        "description": "2D Dark Maze Game made with Python.",
+        "version": "1.0",
+        "size": "68.4 MB",
+        "releaseDate": "2026-08-16",
+        "downloads": 0,
+        "likes": 0,
+        "platform": "Windows",
+        "download": "downloads/Dark_Maze_Setup.exe"
+    },
+
+    {
+        "id": "cars",
+        "name": "Car Race",
+        "image": "images/car.png",
+        "description": "Classic Car Race Game made with Python.",
+        "version": "1.0",
+        "size": "30.1 MB",
+        "releaseDate": "2026-08-04",
+        "downloads": 0,
+        "likes": 0,
+        "platform": "Windows",
+        "download": "downloads/Car_Race_Setup.exe"
+    },
+
+    {
+        "id": "snake",
+        "name": "Snake Game",
+        "image": "images/snake.png",
+        "description": "Classic Snake Game made with Python.",
+        "version": "1.0",
+        "size": "15.3 MB",
+        "releaseDate": "2026-08-02",
+        "downloads": 1,
+        "likes": 13,
+        "platform": "Windows",
+        "download": "downloads/Snake_Game_Setup.exe"
+    },
+
+    {
+        "id": "ping",
+        "name": "Ping Pong",
+        "image": "images/pingpong.png",
+        "description": "2 Player Ping Pong.",
+        "version": "1.0",
+        "size": "15.1 MB",
+        "releaseDate": "2026-08-02",
+        "downloads": 1,
+        "likes": 4,
+        "platform": "Windows",
+        "download": "downloads/Ping_Pong_Setup.exe"
+    },
+
+    {
+        "id": "football",
+        "name": "Football Champion",
+        "image": "images/salah.png",
+        "description": "Classic football penalty console game.",
+        "version": "1.0",
+        "size": "33.1 MB",
+        "releaseDate": "2026-08-02",
+        "downloads": 0,
+        "likes": 0,
+        "platform": "Windows",
+        "download": "downloads/Football_Game_Setup.exe"
+    },
+    
+    {
+        "id": "ide",
+        "name": "Mosayad IDE",
+        "image": "images/ide.png",
+        "description": "It is a simple IDE made with Python. You can write in many Programing Languages and run (Python, Mo_lang, HTML, JS, CSS)",
+        "version": "2.0",
+        "size": "26.4 MB",
+        "releaseDate": "2026-08-17",
+        "downloads": 0,
+        "likes": 0,
+        "platform": "Windows",
+        "download": "downloads/Mosayad_IDE.exe"
+    }
+]

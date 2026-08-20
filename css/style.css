@@ -1,0 +1,1336 @@
+/*==================================================
+                GOOGLE FONT
+==================================================*/
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+
+/*==================================================
+                VARIABLES
+==================================================*/
+
+:root{
+
+    --bg:#101114;
+
+    --header:#181a20;
+
+    --card:#1b1d24;
+
+    --card-hover:#232631;
+
+    --text:#ffffff;
+
+    --text2:#bdbdbd;
+
+    --border:#2c2c2c;
+
+    --primary:#4fa3ff;
+
+    --primary-hover:#2e8fff;
+
+    --shadow:rgba(0,0,0,.35);
+
+}
+
+
+/*========== LIGHT THEME ==========*/
+
+body.light-theme{
+
+    --bg:#f3f5f9;
+
+    --header:#ffffff;
+
+    --card:#ffffff;
+
+    --card-hover:#f7f7f7;
+
+    --text:#222222;
+
+    --text2:#555555;
+
+    --border:#d7d7d7;
+
+    --primary:#0077ff;
+
+    --primary-hover:#005dd1;
+
+    --shadow:rgba(0,0,0,.15);
+
+}
+
+
+/*==================================================
+                    RESET
+==================================================*/
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:"Poppins",sans-serif;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    transition:
+        background .35s,
+        color .35s;
+
+    overflow-x:hidden;
+
+}
+
+
+/*==================================================
+                SCROLLBAR
+==================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:var(--header);
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:var(--primary);
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:var(--primary-hover);
+
+}
+
+
+/*==================================================
+                LOADER
+==================================================*/
+
+#loader{
+
+    position:fixed;
+
+    inset:0;
+
+    background:var(--bg);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:20px;
+
+    z-index:99999;
+
+    transition:.5s;
+
+}
+
+#loader.hide{
+
+    opacity:0;
+
+    visibility:hidden;
+
+}
+
+.spinner{
+
+    width:65px;
+
+    height:65px;
+
+    border:6px solid rgba(255,255,255,.12);
+
+    border-top:6px solid var(--primary);
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/*==================================================
+                    HEADER
+==================================================*/
+
+header{
+
+    width:100%;
+
+    height:80px;
+
+    background:var(--header);
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 7%;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+
+    backdrop-filter:blur(10px);
+
+    transition:.35s;
+
+}
+
+header.scrolled{
+
+    height:70px;
+
+    box-shadow:0 8px 25px var(--shadow);
+
+}
+
+
+/*==================================================
+                    LOGO
+==================================================*/
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.logo img{
+
+    width:48px;
+
+    transition:.3s;
+
+}
+
+.logo img:hover{
+
+    transform:rotate(-8deg) scale(1.08);
+
+}
+
+.logo h1{
+
+    color:var(--primary);
+
+    font-size:28px;
+
+    user-select:none;
+
+}
+
+
+/*==================================================
+                    NAVBAR
+==================================================*/
+
+nav{
+
+    display:flex;
+
+    gap:35px;
+
+}
+
+nav a{
+
+    color:var(--text);
+
+    text-decoration:none;
+
+    font-weight:500;
+
+    position:relative;
+
+    transition:.3s;
+
+}
+
+nav a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-6px;
+
+    width:0;
+
+    height:2px;
+
+    background:var(--primary);
+
+    transition:.3s;
+
+}
+
+nav a:hover{
+
+    color:var(--primary);
+
+}
+
+nav a:hover::after{
+
+    width:100%;
+
+}
+
+
+/*==================================================
+                HEADER BUTTONS
+==================================================*/
+
+.header-buttons{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.header-buttons button{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    font-size:18px;
+
+    transition:.3s;
+
+}
+
+.header-buttons button:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 0 18px rgba(79,163,255,.45);
+
+}
+
+
+/*========== MOBILE MENU BUTTON ==========*/
+
+#menu-btn{
+
+    display:none;
+
+}
+/*==================================================
+                    HERO
+==================================================*/
+
+.hero{
+
+    position:relative;
+
+    min-height:420px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:100px 20px;
+
+    overflow:hidden;
+
+}
+
+
+/*========== Animated Background ==========*/
+
+.hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        radial-gradient(circle at 20% 30%,rgba(79,163,255,.22),transparent 25%),
+        radial-gradient(circle at 80% 20%,rgba(0,255,255,.12),transparent 20%),
+        radial-gradient(circle at 50% 90%,rgba(79,163,255,.18),transparent 25%);
+
+    animation:heroMove 14s linear infinite;
+
+    z-index:0;
+
+}
+
+@keyframes heroMove{
+
+    0%{
+
+        transform:translateY(0) scale(1);
+
+    }
+
+    50%{
+
+        transform:translateY(-20px) scale(1.08);
+
+    }
+
+    100%{
+
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+
+/*========== Hero Content ==========*/
+
+.hero-content{
+
+    position:relative;
+
+    z-index:2;
+
+    max-width:900px;
+
+    animation:fadeUp 1s ease;
+
+}
+
+.hero h2{
+
+    font-size:60px;
+
+    margin-bottom:25px;
+
+    color:var(--text);
+
+    line-height:1.15;
+
+}
+
+.hero p{
+
+    color:var(--text2);
+
+    font-size:20px;
+
+    line-height:1.8;
+
+    max-width:720px;
+
+    margin:auto;
+
+}
+
+
+/*==================================================
+                SEARCH
+==================================================*/
+
+.search{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin:35px 0 60px;
+
+    padding:0 20px;
+
+}
+
+.search input{
+
+    width:700px;
+
+    max-width:100%;
+
+    height:60px;
+
+    padding:0 25px;
+
+    border-radius:16px;
+
+    border:2px solid transparent;
+
+    outline:none;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    font-size:17px;
+
+    transition:.35s;
+
+    box-shadow:0 10px 30px var(--shadow);
+
+}
+
+.search input::placeholder{
+
+    color:var(--text2);
+
+}
+
+.search input:focus{
+
+    border-color:var(--primary);
+
+    transform:scale(1.02);
+
+    box-shadow:0 0 25px rgba(79,163,255,.30);
+
+}
+
+
+/*==================================================
+                GLOBAL ANIMATIONS
+==================================================*/
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(45px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+/*==================================================
+                GAMES CONTAINER
+==================================================*/
+
+main{
+
+    width:100%;
+
+    padding:20px 0 80px;
+
+}
+
+#games-container{
+
+    width:min(1400px,92%);
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+
+    gap:35px;
+
+}
+
+
+/*==================================================
+                GAME CARD
+==================================================*/
+
+.game-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    transition:.35s;
+
+    animation:fadeUp .8s ease;
+
+    box-shadow:0 12px 25px var(--shadow);
+
+    position:relative;
+
+}
+
+.game-card:hover{
+
+    transform:translateY(-12px);
+
+    border-color:var(--primary);
+
+    box-shadow:0 20px 45px rgba(79,163,255,.22);
+
+}
+
+
+/*========== IMAGE ==========*/
+
+.game-card img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+    transition:.45s;
+
+}
+
+.game-card:hover img{
+
+    transform:scale(1.08);
+
+}
+
+
+/*========== CONTENT ==========*/
+
+.game-card h2{
+
+    padding:22px 22px 8px;
+
+    color:var(--text);
+
+    font-size:28px;
+
+}
+
+.game-card p{
+
+    padding:0 22px;
+
+    color:var(--text2);
+
+    line-height:1.7;
+
+    min-height:85px;
+
+}
+
+
+/*========== INFO ==========*/
+
+.game-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 22px;
+
+    color:var(--text2);
+
+    font-size:15px;
+
+}
+
+
+/*==================================================
+                    BUTTONS
+==================================================*/
+
+.buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    padding:0 22px 25px;
+
+}
+
+.buttons a{
+
+    flex:1;
+
+    text-decoration:none;
+
+    text-align:center;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    user-select:none;
+
+}
+
+
+/*========== DOWNLOAD ==========*/
+
+.download{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+.download:hover{
+
+    background:var(--primary-hover);
+
+    transform:translateY(-3px);
+
+    box-shadow:0 0 20px rgba(79,163,255,.45);
+
+}
+
+
+/*========== DETAILS ==========*/
+
+.details{
+
+    background:transparent;
+
+    color:var(--text);
+
+    border:2px solid var(--border);
+
+}
+
+.details:hover{
+
+    border-color:var(--primary);
+
+    color:var(--primary);
+
+}
+
+
+/*==================================================
+                BACK TO TOP
+==================================================*/
+
+#top-btn{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:30px;
+
+    width:55px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    display:none;
+
+    transition:.3s;
+
+    z-index:999;
+
+}
+
+#top-btn:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 0 20px rgba(79,163,255,.5);
+
+}
+
+
+/*==================================================
+                    FOOTER
+==================================================*/
+
+footer{
+
+    border-top:1px solid var(--border);
+
+    background:var(--header);
+
+    text-align:center;
+
+    padding:35px 20px;
+
+}
+
+footer p{
+
+    color:var(--text2);
+
+    font-size:15px;
+
+}
+
+
+/*==================================================
+                HOVER GLOW
+==================================================*/
+
+.game-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:linear-gradient(
+        135deg,
+        transparent,
+        rgba(255,255,255,.05),
+        transparent
+    );
+
+    opacity:0;
+
+    transition:.4s;
+
+}
+
+.game-card:hover::before{
+
+    opacity:1;
+
+}
+/*==================================================
+                    MOBILE MENU
+==================================================*/
+
+@media (max-width:900px){
+
+    header{
+
+        padding:0 25px;
+
+    }
+
+    nav{
+
+        position:fixed;
+
+        top:80px;
+
+        right:-100%;
+
+        width:260px;
+
+        height:calc(100vh - 80px);
+
+        background:var(--header);
+
+        border-left:1px solid var(--border);
+
+        display:flex;
+
+        flex-direction:column;
+
+        justify-content:flex-start;
+
+        align-items:center;
+
+        gap:35px;
+
+        padding-top:50px;
+
+        transition:.35s;
+
+        z-index:999;
+
+    }
+
+    nav.active{
+
+        right:0;
+
+    }
+
+    #menu-btn{
+
+        display:block;
+
+    }
+
+}
+
+
+/*==================================================
+                TABLET
+==================================================*/
+
+@media (max-width:900px){
+
+    .hero{
+
+        min-height:340px;
+
+        padding:80px 25px;
+
+    }
+
+    .hero h2{
+
+        font-size:42px;
+
+    }
+
+    .hero p{
+
+        font-size:18px;
+
+    }
+
+}
+
+
+/*==================================================
+                PHONE
+==================================================*/
+
+@media (max-width:650px){
+
+    .logo h1{
+
+        font-size:22px;
+
+    }
+
+    .logo img{
+
+        width:40px;
+
+    }
+
+    .hero h2{
+
+        font-size:34px;
+
+    }
+
+    .hero p{
+
+        font-size:16px;
+
+    }
+
+    .search input{
+
+        height:54px;
+
+        font-size:16px;
+
+    }
+
+    #games-container{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .game-card h2{
+
+        font-size:24px;
+
+    }
+
+    .buttons{
+
+        flex-direction:column;
+
+    }
+
+    #top-btn{
+
+        width:48px;
+
+        height:48px;
+
+        right:15px;
+
+        bottom:15px;
+
+    }
+
+}
+
+
+/*==================================================
+                SMALL PHONES
+==================================================*/
+
+@media (max-width:420px){
+
+    header{
+
+        height:70px;
+
+    }
+
+    nav{
+
+        top:70px;
+
+        height:calc(100vh - 70px);
+
+    }
+
+    .header-buttons{
+
+        gap:8px;
+
+    }
+
+    .header-buttons button{
+
+        width:38px;
+
+        height:38px;
+
+        font-size:16px;
+
+    }
+
+    .hero{
+
+        padding:60px 15px;
+
+    }
+
+    .hero h2{
+
+        font-size:28px;
+
+    }
+
+    .hero p{
+
+        font-size:15px;
+
+    }
+
+    .game-card img{
+
+        height:180px;
+
+    }
+
+}
+
+
+/*==================================================
+                SCROLL ANIMATION
+==================================================*/
+
+.hidden{
+
+    opacity:0;
+
+    transform:translateY(60px);
+
+    transition:.7s;
+
+}
+
+.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+
+/*==================================================
+                BUTTON EFFECT
+==================================================*/
+
+.buttons a{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.buttons a::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:100%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        90deg,
+
+        transparent,
+
+        rgba(255,255,255,.25),
+
+        transparent
+
+    );
+
+    transition:.5s;
+
+}
+
+.buttons a:hover::before{
+
+    left:120%;
+
+}
+
+
+/*==================================================
+                SELECTION
+==================================================*/
+
+::selection{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+
+/*==================================================
+                INPUT CARET
+==================================================*/
+
+input{
+
+    caret-color:var(--primary);
+
+}
+
+.platform{
+
+    margin-top:10px;
+
+    font-weight:bold;
+
+}
+
+.downloads{
+
+    color:#00c853;
+
+    font-weight:bold;
+
+    margin:8px 0;
+
+}
+.game-card{
+
+    display:block;
+    color:inherit;
+    text-decoration:none;
+
+}
+/*==================================================
+                SMOOTH TRANSITIONS
+==================================================*/
+
+body,
+header,
+nav,
+.game-card,
+.search input,
+footer,
+button,
+a{
+
+    transition:
+
+        background .35s,
+
+        color .35s,
+
+        border-color .35s,
+
+        box-shadow .35s,
+
+        transform .35s;
+
+}
+
+/* ==========================
+   Welcome Section
+========================== */
+
+.welcome-section h1 {
+    margin: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 30px;
+
+    font-size: clamp(55px, 9vw, 90px);
+    font-weight: 900;
+
+    letter-spacing: -4px;
+    line-height: 1;
+}
+
+/* ==========================
+   Animated Gradient Text
+========================== */
+
+.hi-text,
+#user-name {
+
+    background: linear-gradient(
+        90deg,
+        #ff3b30,
+        #ff9500,
+        #ffcc00,
+        #34c759,
+        #00c7ff,
+        #5856d6,
+        #af52de,
+        #ff2d55,
+        #ff3b30
+    );
+
+    background-size: 500% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: welcomeGradient 20s linear infinite;
+
+    filter:
+        drop-shadow(0 0 10px rgba(80, 150, 255, 0.25))
+        drop-shadow(0 0 25px rgba(150, 80, 255, 0.15));
+}
+
+/* ==========================
+   Gradient Animation
+========================== */
+
+@keyframes welcomeGradient {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 250% 50%;
+    }
+
+    100% {
+        background-position: 500% 50%;
+    }
+
+}
