@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <meta
+        name="description"
+        content="Mosayad Scientific Calculator - A powerful scientific calculator with equations, tables, statistics and advanced functions."
+    >
+
+    <title>Mosayad Scientific Calculator</title>
+
+    <link
+        rel="icon"
+        href="../../images/logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+<main class="calculator-app">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="calculator-header">
+
+        <a
+            href="../../index.html"
+            class="back-button"
+        >
+            ← Mosayad Apps
+        </a>
+
+        <div class="calculator-title">
+
+            <span class="title-icon">🧮</span>
+
+            <div>
+                <h1>Scientific Calculator</h1>
+                <p>Mosayad Apps</p>
+            </div>
+
+        </div>
+
+        <button
+            id="theme-btn"
+            class="theme-button"
+            type="button"
+            aria-label="Toggle theme"
+        >
+            🌙
+        </button>
+
+    </header>
+
+
+    <!-- ================= CALCULATOR ================= -->
+
+    <section class="calculator">
+
+        <!-- DISPLAY -->
+
+        <div class="display-container">
+
+            <div class="display-status">
+
+                <div class="status-left">
+
+                    <span
+                        id="shift-indicator"
+                        class="indicator"
+                    >
+                        SHIFT
+                    </span>
+
+                    <span
+                        id="alpha-indicator"
+                        class="indicator"
+                    >
+                        ALPHA
+                    </span>
+
+                </div>
+
+                <div class="status-right">
+
+                    <span id="angle-mode">
+                        DEG
+                    </span>
+
+                    <span id="memory-indicator">
+                        M
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="expression-display"
+                class="expression-display"
+            ></div>
+
+
+            <div
+                id="result-display"
+                class="result-display"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <!-- ================= MODE BUTTONS ================= -->
+
+        <div class="mode-bar">
+
+            <button
+                class="mode-button"
+                data-action="shift"
+                type="button"
+            >
+                <span class="secondary-label">F1</span>
+                SHIFT
+            </button>
+
+            <button
+                class="mode-button"
+                data-action="alpha"
+                type="button"
+            >
+                <span class="secondary-label">F2</span>
+                ALPHA
+            </button>
+
+            <button
+                class="mode-button"
+                data-action="mode"
+                type="button"
+            >
+                MODE
+            </button>
+
+            <button
+                class="mode-button"
+                data-action="setup"
+                type="button"
+            >
+                SETUP
+            </button>
+
+        </div>
+
+
+        <!-- ================= MODE MENU ================= -->
+
+        <div
+            id="mode-menu"
+            class="calculator-menu hidden"
+        >
+
+            <div class="menu-header">
+
+                <div>
+                    <small>SELECT MODE</small>
+                    <strong>MODE</strong>
+                </div>
+
+                <button
+                    class="menu-close"
+                    data-close-menu="mode-menu"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <button
+                class="menu-option"
+                data-mode="calculate"
+                type="button"
+            >
+                <strong>1</strong>
+                <span>Calculate</span>
+            </button>
+
+
+            <button
+                class="menu-option"
+                data-mode="complex"
+                type="button"
+            >
+                <strong>2</strong>
+                <span>Complex</span>
+            </button>
+
+
+            <button
+                class="menu-option"
+                data-mode="equation"
+                type="button"
+            >
+                <strong>3</strong>
+                <span>Equation</span>
+            </button>
+
+
+            <button
+                class="menu-option"
+                data-mode="table"
+                type="button"
+            >
+                <strong>4</strong>
+                <span>Table</span>
+            </button>
+
+
+            <button
+                class="menu-option"
+                data-mode="statistics"
+                type="button"
+            >
+                <strong>5</strong>
+                <span>Statistics</span>
+            </button>
+
+        </div>
+
+
+        <!-- ================= SCIENTIFIC FUNCTIONS ================= -->
+
+        <section class="function-grid">
+
+            <!-- TRIG -->
+
+            <button
+                class="calc-button function-button"
+                data-action="sin"
+                type="button"
+            >
+                <span class="shift-label">sin⁻¹</span>
+                sin
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="cos"
+                type="button"
+            >
+                <span class="shift-label">cos⁻¹</span>
+                cos
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="tan"
+                type="button"
+            >
+                <span class="shift-label">tan⁻¹</span>
+                tan
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="log"
+                type="button"
+            >
+                <span class="shift-label">10ˣ</span>
+                log
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="ln"
+                type="button"
+            >
+                <span class="shift-label">eˣ</span>
+                ln
+            </button>
+
+
+            <!-- ROOT / POWER -->
+
+            <button
+                class="calc-button function-button"
+                data-action="sqrt"
+                type="button"
+            >
+                <span class="shift-label">∛</span>
+                √
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="square"
+                type="button"
+            >
+                <span class="shift-label">x³</span>
+                x²
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="power"
+                type="button"
+            >
+                <span class="shift-label">ⁿ√</span>
+                xʸ
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="inverse-power"
+                type="button"
+            >
+                <span class="shift-label">%</span>
+                x⁻¹
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="factorial"
+                type="button"
+            >
+                <span class="shift-label">%</span>
+                x!
+            </button>
+
+
+            <!-- CONSTANTS -->
+
+            <button
+                class="calc-button function-button"
+                data-action="pi"
+                type="button"
+            >
+                π
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="e"
+                type="button"
+            >
+                e
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="open-parenthesis"
+                type="button"
+            >
+                (
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="close-parenthesis"
+                type="button"
+            >
+                )
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="percent"
+                type="button"
+            >
+                %
+            </button>
+
+        </section>
+
+
+        <!-- ================= MAIN KEYPAD ================= -->
+
+        <section class="keypad">
+
+            <!-- NAVIGATION -->
+
+            <button
+                class="calc-button utility-button"
+                data-action="replay-left"
+                type="button"
+            >
+                ◀
+            </button>
+
+
+            <button
+                class="calc-button utility-button"
+                data-action="replay-right"
+                type="button"
+            >
+                ▶
+            </button>
+
+
+            <button
+                class="calc-button utility-button"
+                data-action="delete"
+                type="button"
+            >
+                DEL
+            </button>
+
+
+            <button
+                class="calc-button clear-button"
+                data-action="clear"
+                type="button"
+            >
+                AC
+            </button>
+
+
+            <!-- 7 8 9 ÷ -->
+
+            <button
+                class="calc-button number-button"
+                data-value="7"
+                type="button"
+            >
+                7
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="8"
+                type="button"
+            >
+                8
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="9"
+                type="button"
+            >
+                9
+            </button>
+
+
+            <button
+                class="calc-button operator-button"
+                data-value="÷"
+                type="button"
+            >
+                ÷
+            </button>
+
+
+            <!-- 4 5 6 × -->
+
+            <button
+                class="calc-button number-button"
+                data-value="4"
+                type="button"
+            >
+                4
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="5"
+                type="button"
+            >
+                5
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="6"
+                type="button"
+            >
+                6
+            </button>
+
+
+            <button
+                class="calc-button operator-button"
+                data-value="×"
+                type="button"
+            >
+                ×
+            </button>
+
+
+            <!-- 1 2 3 − -->
+
+            <button
+                class="calc-button number-button"
+                data-value="1"
+                type="button"
+            >
+                1
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="2"
+                type="button"
+            >
+                2
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="3"
+                type="button"
+            >
+                3
+            </button>
+
+
+            <button
+                class="calc-button operator-button"
+                data-value="−"
+                type="button"
+            >
+                −
+            </button>
+
+
+            <!-- 0 . EXP + -->
+
+            <button
+                class="calc-button number-button zero-button"
+                data-value="0"
+                type="button"
+            >
+                0
+            </button>
+
+
+            <button
+                class="calc-button number-button"
+                data-value="."
+                type="button"
+            >
+                .
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="exp"
+                type="button"
+            >
+                EXP
+            </button>
+
+
+            <button
+                class="calc-button operator-button"
+                data-value="+"
+                type="button"
+            >
+                +
+            </button>
+
+
+            <!-- FINAL -->
+
+            <button
+                class="calc-button function-button"
+                data-action="negative"
+                type="button"
+            >
+                (−)
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="ans"
+                type="button"
+            >
+                Ans
+            </button>
+
+
+            <button
+                class="calc-button function-button"
+                data-action="fraction"
+                type="button"
+            >
+                a b/c
+            </button>
+
+
+            <button
+                class="calc-button equals-button"
+                data-action="equals"
+                type="button"
+            >
+                =
+            </button>
+
+        </section>
+
+
+        <!-- ================= MEMORY ================= -->
+
+        <section class="memory-row">
+
+            <button
+                class="small-button"
+                data-action="memory-clear"
+                type="button"
+            >
+                MC
+            </button>
+
+
+            <button
+                class="small-button"
+                data-action="memory-recall"
+                type="button"
+            >
+                MR
+            </button>
+
+
+            <button
+                class="small-button"
+                data-action="memory-plus"
+                type="button"
+            >
+                M+
+            </button>
+
+
+            <button
+                class="small-button"
+                data-action="memory-minus"
+                type="button"
+            >
+                M−
+            </button>
+
+        </section>
+
+
+        <!-- ================= EXTRA ================= -->
+
+        <section class="extra-actions">
+
+            <button
+                class="extra-button"
+                data-action="history"
+                type="button"
+            >
+                🕘 History
+            </button>
+
+
+            <button
+                class="extra-button"
+                data-action="angle"
+                type="button"
+            >
+                DEG
+            </button>
+
+
+            <button
+                class="extra-button"
+                data-action="setup"
+                type="button"
+            >
+                ⚙ Setup
+            </button>
+
+        </section>
+
+    </section>
+
+
+    <!-- ================= EQUATION ================= -->
+
+    <section
+        id="equation-panel"
+        class="feature-panel hidden"
+    >
+
+        <div class="panel-header">
+
+            <div>
+                <span>MODE 3</span>
+                <h2>Equation Solver</h2>
+            </div>
+
+            <button
+                class="panel-close"
+                data-close-panel="equation-panel"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="equation-type">
+
+            <button
+                class="equation-type-button active"
+                data-equation-type="linear"
+                type="button"
+            >
+                Linear
+            </button>
+
+
+            <button
+                class="equation-type-button"
+                data-equation-type="quadratic"
+                type="button"
+            >
+                Quadratic
+            </button>
+
+        </div>
+
+
+        <div
+            id="equation-inputs"
+            class="equation-inputs"
+        ></div>
+
+
+        <button
+            id="solve-equation"
+            class="solve-button"
+            type="button"
+        >
+            Solve
+        </button>
+
+
+        <div
+            id="equation-result"
+            class="feature-result"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <section
+        id="table-panel"
+        class="feature-panel hidden"
+    >
+
+        <div class="panel-header">
+
+            <div>
+                <span>MODE 4</span>
+                <h2>Function Table</h2>
+            </div>
+
+            <button
+                class="panel-close"
+                data-close-panel="table-panel"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <label class="input-label">
+
+            f(x)
+
+            <input
+                id="table-function"
+                type="text"
+                placeholder="x² + 2x + 1"
+                autocomplete="off"
+            >
+
+        </label>
+
+
+        <div class="table-settings">
+
+            <label class="input-label">
+                Start
+
+                <input
+                    id="table-start"
+                    type="number"
+                    value="-5"
+                >
+            </label>
+
+
+            <label class="input-label">
+                End
+
+                <input
+                    id="table-end"
+                    type="number"
+                    value="5"
+                >
+            </label>
+
+
+            <label class="input-label">
+                Step
+
+                <input
+                    id="table-step"
+                    type="number"
+                    value="1"
+                >
+            </label>
+
+        </div>
+
+
+        <button
+            id="generate-table"
+            class="solve-button"
+            type="button"
+        >
+            Generate Table
+        </button>
+
+
+        <div
+            id="table-result"
+            class="table-result"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= HISTORY ================= -->
+
+    <section
+        id="history-panel"
+        class="feature-panel hidden"
+    >
+
+        <div class="panel-header">
+
+            <div>
+                <span>HISTORY</span>
+                <h2>Calculations</h2>
+            </div>
+
+            <button
+                class="panel-close"
+                data-close-panel="history-panel"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="history-list"
+            class="history-list"
+        >
+
+            <p class="empty-history">
+                No calculations yet.
+            </p>
+
+        </div>
+
+
+        <button
+            id="clear-history"
+            class="danger-button"
+            type="button"
+        >
+            Clear History
+        </button>
+
+    </section>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section class="calculator-about">
+
+        <h2>
+            Mosayad Scientific Calculator
+        </h2>
+
+        <p>
+            A scientific calculator inspired by the
+            classic Casio-style workflow, supporting
+            scientific functions, equations, tables,
+            memory and calculation history.
+        </p>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Mosayad Apps
+        </p>
+
+    </footer>
+
+</main>
+
+
+<script src="calculator.js"></script>
+
+</body>
+</html>

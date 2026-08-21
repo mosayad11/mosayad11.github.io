@@ -1,0 +1,1277 @@
+/* =========================================================
+   MOSAYAD GAMES
+   CAR RACING
+   STYLE SHEET
+   ========================================================= */
+
+:root {
+    --bg: #070b14;
+    --bg-2: #0d1322;
+    --panel: rgba(15, 23, 42, 0.88);
+
+    --text: #f8fafc;
+    --muted: #94a3b8;
+
+    --primary: #2563eb;
+    --primary-light: #38bdf8;
+
+    --danger: #ef4444;
+    --success: #22c55e;
+
+    --road: #20252d;
+    --road-edge: #f8fafc;
+
+    --shadow:
+        0 25px 70px rgba(0, 0, 0, 0.55);
+
+    --radius: 20px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(37, 99, 235, 0.18),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bg),
+            var(--bg-2)
+        );
+
+    color: var(--text);
+
+    overflow-x: hidden;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   GAME CONTAINER
+   ========================================================= */
+
+.game-container {
+    width: min(100%, 1000px);
+    margin: auto;
+    padding: 20px;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.game-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 16px;
+
+    color: white;
+    text-decoration: none;
+
+    font-weight: 700;
+    font-size: 14px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(15, 23, 42, 0.85);
+
+    border: 1px solid
+        rgba(148, 163, 184, 0.16);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+
+    background:
+        rgba(37, 99, 235, 0.25);
+
+    border-color:
+        rgba(56, 189, 248, 0.45);
+}
+
+.back-button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================================
+   SCORE
+   ========================================================= */
+
+.game-info {
+    display: flex;
+    gap: 10px;
+}
+
+.score-box {
+    min-width: 85px;
+
+    padding: 8px 14px;
+
+    text-align: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(15, 23, 42, 0.85);
+
+    border:
+        1px solid
+        rgba(148, 163, 184, 0.15);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.score-box span {
+    display: block;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: var(--muted);
+}
+
+.score-box strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 21px;
+
+    color: white;
+}
+
+
+/* =========================================================
+   GAME AREA
+   ========================================================= */
+
+.game-area {
+    position: relative;
+
+    width: 100%;
+
+    height: min(
+        72vh,
+        700px
+    );
+
+    min-height: 500px;
+
+    overflow: hidden;
+
+    border-radius: var(--radius);
+
+    background:
+        #111827;
+
+    border:
+        2px solid
+        rgba(148, 163, 184, 0.12);
+
+    box-shadow:
+        var(--shadow);
+
+    isolation: isolate;
+}
+
+
+/* =========================================================
+   ROAD
+   ========================================================= */
+
+.road {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            90deg,
+            #14181e 0%,
+            #242a32 8%,
+            #292f37 50%,
+            #242a32 92%,
+            #14181e 100%
+        );
+}
+
+
+/* road edge */
+
+.road::before,
+.road::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    width: 6px;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            white 0px,
+            white 35px,
+            #ef4444 35px,
+            #ef4444 70px
+        );
+
+    opacity: 0.9;
+
+    z-index: 1;
+}
+
+.road::before {
+    left: 3%;
+}
+
+.road::after {
+    right: 3%;
+}
+
+
+/* =========================================================
+   ROAD LINES
+   ========================================================= */
+
+.road-line {
+    position: absolute;
+
+    width: 9px;
+
+    height: 95px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.95),
+            rgba(255,255,255,0.75)
+        );
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 0 10px
+        rgba(255,255,255,0.08);
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   LANE GLOW
+   ========================================================= */
+
+.road-glow {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.025) 50%,
+            transparent 100%
+        );
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   CAR
+   ========================================================= */
+
+.car {
+    position: absolute;
+
+    width: 62px;
+    height: 105px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius:
+        18px
+        18px
+        12px
+        12px;
+
+    z-index: 5;
+
+    transform-origin: center;
+
+    will-change:
+        transform,
+        left,
+        top;
+}
+
+
+/* =========================================================
+   PLAYER CAR
+   ========================================================= */
+
+.player-car {
+    bottom: 45px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    background:
+        linear-gradient(
+            160deg,
+            #38bdf8,
+            #2563eb 50%,
+            #1d4ed8
+        );
+
+    border:
+        3px solid
+        rgba(255,255,255,0.8);
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,0.2),
+        0 15px 30px rgba(0,0,0,0.55),
+        0 0 30px rgba(37,99,235,0.3);
+
+    font-size: 0;
+
+    transition:
+        left 0.08s linear;
+}
+
+
+/* car windshield */
+
+.player-car::before {
+    content: "";
+
+    position: absolute;
+
+    top: 16px;
+
+    width: 38px;
+    height: 29px;
+
+    border-radius:
+        10px
+        10px
+        5px
+        5px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dff7ff,
+            #0f172a
+        );
+
+    border:
+        2px solid
+        rgba(255,255,255,0.35);
+}
+
+
+/* car stripe */
+
+.player-car::after {
+    content: "";
+
+    position: absolute;
+
+    width: 7px;
+    height: 100%;
+
+    top: 0;
+
+    background:
+        rgba(255,255,255,0.22);
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   ENEMY CAR
+   ========================================================= */
+
+.enemy-car {
+    width: 60px;
+    height: 102px;
+
+    border:
+        3px solid
+        rgba(255,255,255,0.65);
+
+    box-shadow:
+        0 12px 25px
+        rgba(0,0,0,0.45);
+}
+
+
+/* windshield */
+
+.enemy-car::before {
+    content: "";
+
+    position: absolute;
+
+    top: 15px;
+
+    width: 36px;
+    height: 28px;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.8),
+            #172033
+        );
+}
+
+
+/* =========================================================
+   CAR LIGHTS
+   ========================================================= */
+
+.car .light {
+    position: absolute;
+
+    width: 8px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    top: 7px;
+
+    box-shadow:
+        0 0 10px currentColor;
+}
+
+.car .light.left {
+    left: 9px;
+}
+
+.car .light.right {
+    right: 9px;
+}
+
+
+/* =========================================================
+   GAME SCREENS
+   ========================================================= */
+
+.game-screen {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 20;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 25px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(15,23,42,0.55),
+            rgba(2,6,23,0.94)
+        );
+
+    backdrop-filter:
+        blur(5px);
+}
+
+.game-screen h1 {
+    font-size:
+        clamp(32px, 6vw, 58px);
+
+    margin-bottom: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #38bdf8,
+            #2563eb
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.game-screen p {
+    max-width: 520px;
+
+    line-height: 1.6;
+
+    color: #cbd5e1;
+
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.game-button {
+    border: 0;
+
+    padding:
+        14px
+        27px;
+
+    border-radius: 14px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0ea5e9
+        );
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 30px
+        rgba(37,99,235,0.3);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.game-button:hover {
+    transform:
+        translateY(-3px)
+        scale(1.02);
+
+    box-shadow:
+        0 18px 40px
+        rgba(37,99,235,0.45);
+
+    filter: brightness(1.08);
+}
+
+.game-button:active {
+    transform:
+        scale(0.96);
+}
+
+
+/* =========================================================
+   CONTROLS INFO
+   ========================================================= */
+
+.controls-info {
+    margin-top: 25px;
+}
+
+.controls-info p {
+    margin: 5px;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FINAL SCORE
+   ========================================================= */
+
+.final-score {
+    display: block;
+
+    font-size:
+        clamp(55px, 10vw, 90px);
+
+    margin:
+        0 0 25px;
+
+    color: #38bdf8;
+
+    text-shadow:
+        0 0 30px
+        rgba(56,189,248,0.35);
+}
+
+
+/* =========================================================
+   MOBILE CONTROLS
+   ========================================================= */
+
+.mobile-controls {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 25px;
+
+    margin-top: 15px;
+}
+
+.control-button {
+    width: 90px;
+    height: 60px;
+
+    border: 1px solid
+        rgba(255,255,255,0.12);
+
+    border-radius: 16px;
+
+    color: white;
+
+    background:
+        rgba(15,23,42,0.9);
+
+    font-size: 27px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,0.3);
+
+    transition:
+        transform 0.1s ease,
+        background 0.1s ease;
+}
+
+.control-button:active {
+    transform: scale(0.9);
+
+    background:
+        rgba(37,99,235,0.7);
+}
+
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   CRASH EFFECT
+   ========================================================= */
+
+.crash {
+    animation:
+        crashShake
+        0.35s
+        ease;
+}
+
+@keyframes crashShake {
+
+    0% {
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(-50%) rotate(-8deg);
+    }
+
+    50% {
+        transform: translateX(-50%) rotate(8deg);
+    }
+
+    75% {
+        transform: translateX(-50%) rotate(-5deg);
+    }
+
+    100% {
+        transform: translateX(-50%) rotate(0deg);
+    }
+}
+
+
+/* =========================================================
+   FLASH
+   ========================================================= */
+
+.game-area.hit {
+    animation:
+        screenFlash
+        0.35s
+        ease;
+}
+
+@keyframes screenFlash {
+
+    0% {
+        filter: brightness(1);
+    }
+
+    40% {
+        filter: brightness(2);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .game-container {
+        padding: 10px;
+    }
+
+    .game-header {
+        margin-bottom: 10px;
+    }
+
+    .back-button {
+        padding:
+            9px
+            12px;
+
+        font-size: 12px;
+    }
+
+    .score-box {
+        min-width: 65px;
+
+        padding:
+            7px
+            9px;
+    }
+
+    .score-box strong {
+        font-size: 18px;
+    }
+
+    .game-area {
+        height: 72vh;
+
+        min-height: 430px;
+
+        border-radius: 15px;
+    }
+
+    .car {
+        width: 52px;
+        height: 90px;
+    }
+
+    .enemy-car {
+        width: 52px;
+        height: 90px;
+    }
+
+    .player-car::before,
+    .enemy-car::before {
+        width: 30px;
+        height: 24px;
+    }
+
+    .mobile-controls {
+        margin-top: 10px;
+
+        gap: 15px;
+    }
+
+    .control-button {
+        width: 42vw;
+
+        max-width: 180px;
+
+        height: 62px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .game-area {
+        min-height: 400px;
+    }
+
+    .game-screen h1 {
+        font-size: 32px;
+    }
+
+    .game-screen p {
+        font-size: 13px;
+    }
+
+    .game-button {
+        padding:
+            12px
+            22px;
+    }
+}
+/* =========================================================
+   NARROWER GAME SCREEN
+   ========================================================= */
+
+.game-area {
+    position: relative;
+
+    width: min(100%, 560px);
+
+    /*
+     * Center the game screen
+     */
+    margin: 0 auto;
+
+    height: min(78vh, 720px);
+
+    min-height: 500px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #111827;
+
+    border:
+        2px solid
+        rgba(148, 163, 184, 0.12);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.55);
+
+    isolation: isolate;
+}
+
+
+/* =========================================================
+   SMALLER CARS
+   ========================================================= */
+
+.car {
+    width: 48px;
+    height: 82px;
+
+    border-radius:
+        14px
+        14px
+        10px
+        10px;
+}
+
+
+/* =========================================================
+   PLAYER CAR
+   ========================================================= */
+
+.player-car {
+    bottom: 40px;
+
+    border-width: 2px;
+
+    box-shadow:
+        0 0 0 2px rgba(37,99,235,0.2),
+        0 12px 25px rgba(0,0,0,0.55),
+        0 0 25px rgba(37,99,235,0.3);
+}
+
+
+/* =========================================================
+   ENEMY CAR
+   ========================================================= */
+
+.enemy-car {
+    width: 46px;
+    height: 78px;
+
+    border-width: 2px;
+}
+
+
+/* =========================================================
+   SMALLER WINDSHIELD
+   ========================================================= */
+
+.player-car::before,
+.enemy-car::before {
+
+    top: 12px;
+
+    width: 28px;
+    height: 22px;
+
+    border-radius: 7px;
+}
+
+
+/* =========================================================
+   CAR LIGHTS
+   ========================================================= */
+
+.car .light {
+
+    width: 6px;
+    height: 5px;
+
+    top: 6px;
+}
+
+.car .light.left {
+    left: 7px;
+}
+
+.car .light.right {
+    right: 7px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .game-container {
+        padding: 10px;
+    }
+
+    /*
+     * Keep the game narrow even on phones.
+     */
+
+    .game-area {
+
+        width:
+            min(
+                92vw,
+                390px
+            );
+
+        height:
+            calc(
+                100vh - 180px
+            );
+
+        min-height: 430px;
+
+        max-height: 680px;
+
+        border-radius: 16px;
+    }
+
+    /*
+     * Even smaller cars on phones.
+     */
+
+    .car {
+        width: 42px;
+        height: 72px;
+    }
+
+    .enemy-car {
+        width: 40px;
+        height: 70px;
+    }
+
+    .player-car::before,
+    .enemy-car::before {
+
+        width: 24px;
+        height: 19px;
+
+        top: 10px;
+    }
+
+    .car .light {
+
+        width: 5px;
+        height: 4px;
+
+        top: 5px;
+    }
+
+    .car .light.left {
+        left: 6px;
+    }
+
+    .car .light.right {
+        right: 6px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .game-area {
+
+        width: 88vw;
+
+        min-height: 400px;
+
+        height:
+            calc(
+                100vh - 175px
+            );
+    }
+
+    .car {
+        width: 38px;
+        height: 66px;
+    }
+
+    .enemy-car {
+        width: 36px;
+        height: 64px;
+    }
+}
+/* =========================================================
+   SMALLER CARS
+   ========================================================= */
+
+.car {
+    width: 42px;
+    height: 72px;
+
+    border-radius:
+        12px
+        12px
+        9px
+        9px;
+}
+
+
+/* Player */
+
+.player-car {
+    bottom: 38px;
+
+    border-width: 2px;
+
+    box-shadow:
+        0 0 0 2px rgba(37, 99, 235, 0.2),
+        0 10px 22px rgba(0, 0, 0, 0.5),
+        0 0 22px rgba(37, 99, 235, 0.28);
+}
+
+
+/* Enemy */
+
+.enemy-car {
+    width: 40px;
+    height: 69px;
+
+    border-width: 2px;
+}
+
+
+/* Windshields */
+
+.player-car::before,
+.enemy-car::before {
+
+    top: 10px;
+
+    width: 24px;
+    height: 19px;
+
+    border-radius: 6px;
+}
+
+
+/* Lights */
+
+.car .light {
+
+    width: 5px;
+    height: 4px;
+
+    top: 5px;
+}
+
+.car .light.left {
+    left: 6px;
+}
+
+.car .light.right {
+    right: 6px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .game-area {
+
+        width:
+            min(
+                92vw,
+                390px
+            );
+
+        /*
+         * We don't make the road extremely tall.
+         * Instead, smaller cars + slower speed
+         * create the longer-road feeling.
+         */
+
+        height:
+            calc(
+                100vh - 180px
+            );
+
+        min-height: 430px;
+
+        max-height: 680px;
+    }
+
+    .car {
+        width: 38px;
+        height: 65px;
+    }
+
+    .enemy-car {
+        width: 36px;
+        height: 63px;
+    }
+
+    .player-car::before,
+    .enemy-car::before {
+
+        width: 22px;
+        height: 17px;
+
+        top: 9px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .game-area {
+        width: 88vw;
+    }
+
+    .car {
+        width: 35px;
+        height: 60px;
+    }
+
+    .enemy-car {
+        width: 33px;
+        height: 58px;
+    }
+}

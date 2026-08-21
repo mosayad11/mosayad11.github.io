@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <title>
+        Car Racing - Mosayad Games
+    </title>
+
+    <link
+        rel="icon"
+        href="../../images/logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         GAME
+    ====================================== -->
+
+    <main class="game-container">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <header class="game-header">
+
+            <a
+                href="../../index.html"
+                class="back-button"
+            >
+                ← Mosayad Games
+            </a>
+
+
+            <div class="game-info">
+
+                <div class="score-box">
+
+                    <span>
+                        SCORE
+                    </span>
+
+                    <strong id="score">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="score-box">
+
+                    <span>
+                        BEST
+                    </span>
+
+                    <strong id="best-score">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================
+             GAME AREA
+        ====================================== -->
+
+        <section
+            id="game-area"
+            class="game-area"
+        >
+
+
+            <!-- ROAD -->
+
+            <div
+                id="road"
+                class="road"
+            >
+
+                <!-- Road lines will be created by JS -->
+
+            </div>
+
+
+
+            <!-- PLAYER CAR -->
+
+            <div
+                id="player"
+                class="car player-car"
+            >
+                🚗
+            </div>
+
+
+
+            <!-- START SCREEN -->
+
+            <div
+                id="start-screen"
+                class="game-screen"
+            >
+
+                <h1>
+                    🚗 Car Racing
+                </h1>
+
+                <p>
+                    Avoid the cars and survive as long as possible!
+                </p>
+
+
+                <button
+                    id="start-button"
+                    class="game-button"
+                    type="button"
+                >
+                    ▶ Start Game
+                </button>
+
+
+                <div class="controls-info">
+
+                    <p>
+                        ⬅️ ➡️ Use Arrow Keys
+                    </p>
+
+                    <p>
+                        or use the buttons below
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- GAME OVER SCREEN -->
+
+            <div
+                id="game-over-screen"
+                class="game-screen hidden"
+            >
+
+                <h1>
+                    💥 Game Over
+                </h1>
+
+
+                <p>
+                    Your Score
+                </p>
+
+
+                <strong
+                    id="final-score"
+                    class="final-score"
+                >
+                    0
+                </strong>
+
+
+                <button
+                    id="restart-button"
+                    class="game-button"
+                    type="button"
+                >
+                    🔄 Play Again
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             MOBILE CONTROLS
+        ====================================== -->
+
+        <section class="mobile-controls">
+
+            <button
+                id="left-button"
+                class="control-button"
+                type="button"
+                aria-label="Move Left"
+            >
+                ◀
+            </button>
+
+
+            <button
+                id="right-button"
+                class="control-button"
+                type="button"
+                aria-label="Move Right"
+            >
+                ▶
+            </button>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT
+    ====================================== -->
+
+    <script src="game.js"></script>
+
+
+</body>
+
+</html>

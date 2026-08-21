@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>Snake | Mosayad Apps</title>
+
+    <link
+        rel="icon"
+        href="../../images/logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="game-page">
+
+        <!-- HEADER -->
+
+        <header class="game-header">
+
+            <a
+                href="../../index.html"
+                class="back-button"
+            >
+                ← Mosayad Apps
+            </a>
+
+            <h1>🐍 Snake</h1>
+
+            <button
+                id="theme-btn"
+                class="icon-button"
+                aria-label="Toggle theme"
+            >
+                🌙
+            </button>
+
+        </header>
+
+
+        <!-- GAME INFO -->
+
+        <section class="game-info">
+
+            <div class="stat">
+
+                <span class="stat-label">
+                    Score
+                </span>
+
+                <strong id="score">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="stat-label">
+                    Best
+                </span>
+
+                <strong id="best-score">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="stat-label">
+                    Level
+                </span>
+
+                <strong id="level">
+                    1
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAME -->
+
+        <section class="game-container">
+
+            <div
+                id="game-wrapper"
+                class="game-wrapper"
+            >
+
+                <canvas
+                    id="game-canvas"
+                    width="600"
+                    height="600"
+                ></canvas>
+
+
+                <!-- START / GAME OVER -->
+
+                <div
+                    id="game-overlay"
+                    class="game-overlay"
+                >
+
+                    <div class="overlay-card">
+
+                        <div
+                            id="overlay-icon"
+                            class="overlay-icon"
+                        >
+                            🐍
+                        </div>
+
+                        <h2 id="overlay-title">
+                            Snake
+                        </h2>
+
+                        <p id="overlay-message">
+                            Eat the food and grow as long as possible.
+                        </p>
+
+                        <button
+                            id="start-button"
+                            class="primary-button"
+                        >
+                            Start Game
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTROLS -->
+
+        <section class="controls">
+
+            <div class="controls-title">
+                Controls
+            </div>
+
+            <p class="keyboard-help">
+                Use <strong>Arrow Keys</strong> or
+                <strong>W A S D</strong> to move.
+            </p>
+
+
+            <div class="mobile-controls">
+
+                <button
+                    class="control-button up"
+                    data-direction="up"
+                    aria-label="Move up"
+                >
+                    ▲
+                </button>
+
+
+                <div class="middle-controls">
+
+                    <button
+                        class="control-button"
+                        data-direction="left"
+                        aria-label="Move left"
+                    >
+                        ◀
+                    </button>
+
+                    <button
+                        class="control-button"
+                        data-direction="down"
+                        aria-label="Move down"
+                    >
+                        ▼
+                    </button>
+
+                    <button
+                        class="control-button"
+                        data-direction="right"
+                        aria-label="Move right"
+                    >
+                        ▶
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIONS -->
+
+        <section class="actions">
+
+            <button
+                id="pause-button"
+                class="secondary-button"
+            >
+                ⏸ Pause
+            </button>
+
+            <button
+                id="restart-button"
+                class="secondary-button"
+            >
+                🔄 Restart
+            </button>
+
+        </section>
+
+
+        <!-- ABOUT GAME -->
+
+        <section class="game-description">
+
+            <h2>
+                About Snake
+            </h2>
+
+            <p>
+
+                Control the snake, eat the food, grow longer,
+                and try to beat your highest score.
+
+                The game works with keyboard controls on
+                computers and touch controls on mobile devices.
+
+            </p>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                © 2026 Mosayad Apps
+            </p>
+
+        </footer>
+
+    </main>
+
+
+    <script src="game.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+[
+    {
+        "id": "snake",
+        "name": "Snake",
+        "type": "game",
+        "description": "Play the classic Snake game directly in your browser.",
+        "image": "images/apps/snake.png",
+        "path": "apps/snake/index.html"
+    },
+
+    {
+        "id": "cars",
+        "name": "Car Game",
+        "type": "game",
+        "description": "Play the classic Snake game directly in your browser.",
+        "image": "images/apps/car.png",
+        "path": "apps/car/index.html"
+    },
+    
+    {
+        "id": "calculator",
+        "name": "Calculator",
+        "type": "tool",
+        "description": "A simple and fast calculator that works on any device.",
+        "image": "images/apps/calculator.png",
+        "path": "apps/calculator/index.html"
+    }
+]

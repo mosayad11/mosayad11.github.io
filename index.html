@@ -5,187 +5,757 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Mosayad Games</title>
+    <title>Mosayad Apps</title>
 
-    <script async
+    <!-- =====================================================
+         GOOGLE ADSENSE
+         ===================================================== -->
+
+    <script
+        async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4223412122473263"
         crossorigin="anonymous">
     </script>
 
-    <meta name="theme-color" content="#111648">
-    <meta name="author" content="Mohamed Elsayaad">
-    <meta name="description" content="Download free Python games created by Mohamed Elsayaad.">
-    <meta name="robots" content="index, follow">
 
-    <meta property="og:url" content="https://mosayad11.github.io/mosayad-games/">
-    <meta property="og:title" content="Mosayad Games">
-    <meta property="og:site_name" content="Mosayad Games">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:description" content="Download free Python games.">
-    <meta property="og:image" content="https://mosayad11.github.io/mosayad-games/images/logo.png">
-    <meta property="og:type" content="website">
+    <!-- =====================================================
+         SEO
+         ===================================================== -->
 
-    <link rel="icon" href="images/logo.png">
-    <link rel="canonical" href="https://mosayad11.github.io/mosayad-games/">
-    <link rel="stylesheet" href="css/style.css">
+    <meta
+        name="theme-color"
+        content="#070a12"
+    >
+
+    <meta
+        name="author"
+        content="Mohamed Elsayaad"
+    >
+
+    <meta
+        name="description"
+        content="Play games and use useful apps online for free with Mosayad Apps."
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+
+    <!-- =====================================================
+         OPEN GRAPH
+         ===================================================== -->
+
+    <meta
+        property="og:url"
+        content="https://mosayad11.github.io/"
+    >
+
+    <meta
+        property="og:title"
+        content="Mosayad Apps"
+    >
+
+    <meta
+        property="og:site_name"
+        content="Mosayad Apps"
+    >
+
+    <meta
+        property="og:locale"
+        content="en_US"
+    >
+
+    <meta
+        property="og:description"
+        content="Play games and use useful apps online for free."
+    >
+
+    <meta
+        property="og:image"
+        content="images/logo.png"
+    >
+
+    <meta
+        property="og:type"
+        content="website"
+    >
+
+
+    <!-- =====================================================
+         ICON
+         ===================================================== -->
+
+    <link
+        rel="icon"
+        href="images/logo.png"
+    >
+
+
+    <!-- =====================================================
+         CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
 </head>
 
+
 <body>
 
-    <!--========== LOADING SCREEN ==========-->
 
-    <div id="loader">
+    <!-- =====================================================
+         LOADING SCREEN
+         ===================================================== -->
 
-        <div class="spinner"></div>
+    <div
+        id="loader"
+        class="loader-screen"
+    >
 
-        <h2>Loading...</h2>
+        <div class="loader-spinner"></div>
+
+        <p>Loading Mosayad Apps...</p>
 
     </div>
 
-    <!--========== HEADER ==========-->
 
-    <header>
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
-        <div class="logo">
+    <header class="site-header">
 
-            <img src="images/logo.png" alt="Logo">
+        <div class="header-inner">
 
-            <h1>Mosayad Games</h1>
 
-        </div>
+            <!-- BRAND -->
 
-        <nav id="nav">
+            <a
+                href="#"
+                class="brand"
+            >
 
-            <a href="#">Home</a>
+                <img
+                    src="images/logo.png"
+                    alt="Mosayad Apps Logo"
+                    class="brand-logo"
+                >
 
-            <a href="#">Games</a>
+                <div class="brand-text">
 
-            <a href="#">About</a>
+                    <span class="brand-name">
+                        Mosayad
+                    </span>
 
-            <a href="#">Contact</a>
+                    <span class="brand-subtitle">
+                        Apps
+                    </span>
 
-        </nav>
+                </div>
 
-        <div class="header-buttons">
+            </a>
 
-            <button id="sound-btn" title="Sound">
 
-                🔊
+            <!-- DESKTOP NAV -->
 
-            </button>
+            <nav class="main-nav">
 
-            <button id="theme-btn" title="Theme">
+                <a
+                    href="#home"
+                    class="nav-link active"
+                >
+                    Home
+                </a>
 
-                🌙
+                <a
+                    href="#apps"
+                    class="nav-link"
+                >
+                    Apps
+                </a>
 
-            </button>
+                <a
+                    href="#about"
+                    class="nav-link"
+                >
+                    About
+                </a>
 
-            <button id="menu-btn">
+            </nav>
 
-                ☰
 
-            </button>
+            <!-- HEADER ACTIONS -->
+
+            <div class="header-actions">
+
+                <button
+                    id="sound-btn"
+                    class="icon-btn"
+                    type="button"
+                    title="Sound"
+                    aria-label="Toggle sound"
+                >
+                    🔊
+                </button>
+
+
+                <button
+                    id="theme-btn"
+                    class="icon-btn"
+                    type="button"
+                    title="Theme"
+                    aria-label="Toggle theme"
+                >
+                    🌙
+                </button>
+
+
+                <button
+                    id="menu-btn"
+                    class="icon-btn menu-btn"
+                    type="button"
+                    title="Menu"
+                    aria-label="Open menu"
+                >
+                    ☰
+                </button>
+
+            </div>
 
         </div>
 
     </header>
 
-    <!--========== welcome ==========-->
 
-    <section class="welcome-section">
-        <p>Welcome back to Mosayad Games 🎮</p>
-        <h2>🫂Users: 14</h2>
-        <h1>
-            <span class="hi-text">Hi</span>
-            <span id="user-name">Player</span>
-        </h1>
-    </section>
-    
-    <!--========== HERO ==========-->
+    <!-- =====================================================
+         MOBILE MENU
+         ===================================================== -->
 
-    <section class="hero">
+    <div
+        id="mobile-menu"
+        class="mobile-menu"
+    >
 
-        <div class="hero-content">
+        <a href="#home">
+            Home
+        </a>
 
-            <h2>
+        <a href="#apps">
+            Apps
+        </a>
 
-                Download Free Python Games
+        <a href="#about">
+            About
+        </a>
 
-            </h2>
+    </div>
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main id="home">
+
+
+        <!-- =================================================
+             WELCOME
+             ================================================= -->
+
+        <section class="welcome-section">
+
+            <div class="welcome-content">
+
+                <h1>
+
+                    <span class="hi-text">
+                        Hi
+                    </span>
+
+                    <span id="user-name">
+                        Player
+                    </span>
+
+                </h1>
+
+                <p>
+                    Discover games and useful apps made for you.
+                </p>
+
+            </div>
+
+
+            <div class="users-card">
+
+                <div class="users-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <strong id="users-count">
+                        0
+                    </strong>
+
+                    <span>
+                        Users
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TOP AD
+             ================================================= -->
+
+        <div class="ad-container ad-top">
+
+            <span class="ad-label">
+                Advertisement
+            </span>
+
+            <!--
+                AdSense can be inserted here later.
+                Do not put fake ad code here.
+            -->
+
+        </div>
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="hero-section">
+
+
+            <div class="hero-content">
+
+                <span class="hero-badge">
+                    ✨ MOSAYAD APPS
+                </span>
+
+
+                <h2>
+
+                    Play.
+                    <br>
+
+                    <span>
+                        Explore.
+                    </span>
+
+                    <br>
+
+                    Enjoy.
+
+                </h2>
+
+
+                <p>
+
+                    Play browser games and discover
+                    useful applications — completely
+                    online and free.
+
+                </p>
+
+
+                <a
+                    href="#apps"
+                    class="hero-button"
+                >
+
+                    Explore Apps
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- HERO DECORATION -->
+
+            <div
+                class="hero-decoration"
+                aria-hidden="true"
+            >
+
+                <div class="floating-icon icon-one">
+                    🎮
+                </div>
+
+                <div class="floating-icon icon-two">
+                    🧩
+                </div>
+
+                <div class="floating-icon icon-three">
+                    🚀
+                </div>
+
+                <div class="floating-icon icon-four">
+                    ⚡
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MIDDLE AD
+             ================================================= -->
+
+        <div class="ad-container ad-middle">
+
+            <span class="ad-label">
+                Advertisement
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             APPS
+             ================================================= -->
+
+        <section
+            id="apps"
+            class="apps-section"
+        >
+
+
+            <!-- SECTION HEADER -->
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        EXPLORE
+                    </span>
+
+                    <h2>
+                        Apps & Games
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH
+                 ================================================= -->
+
+            <div class="search-box">
+
+                <span
+                    class="search-icon"
+                    aria-hidden="true"
+                >
+                    🔎
+                </span>
+
+
+                <input
+                    id="search"
+                    type="search"
+                    autocomplete="off"
+                    placeholder="Search apps and games..."
+                    aria-label="Search apps and games"
+                >
+
+
+                <button
+                    id="clear-search"
+                    type="button"
+                    title="Clear search"
+                    aria-label="Clear search"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 FILTERS
+                 ================================================= -->
+
+            <div class="filters-wrapper">
+
+                <div
+                    id="filters"
+                    class="filters"
+                >
+
+                    <button
+                        class="filter-btn active"
+                        data-type="all"
+                        type="button"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-type="game"
+                        type="button"
+                    >
+                        🎮 Games
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-type="app"
+                        type="button"
+                    >
+                        📱 Apps
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-type="tool"
+                        type="button"
+                    >
+                        🛠 Tools
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        data-type="education"
+                        type="button"
+                    >
+                        📚 Education
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 RESULTS COUNT
+                 ================================================= -->
+
+            <div class="results-info">
+
+                <span id="results-count">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 APPS GRID
+                 ================================================= -->
+
+            <div
+                id="games-container"
+                class="apps-grid"
+            >
+
+                <!--
+                    JavaScript will create
+                    the app cards here.
+                -->
+
+            </div>
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <div
+                id="empty-state"
+                class="empty-state hidden"
+            >
+
+                <div class="empty-icon">
+                    🔍
+                </div>
+
+                <h3>
+                    Nothing found
+                </h3>
+
+                <p>
+                    Try another search or category.
+                </p>
+
+                <button
+                    id="reset-search"
+                    class="reset-button"
+                    type="button"
+                >
+                    Reset
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ABOUT
+             ================================================= -->
+
+        <section
+            id="about"
+            class="about-section"
+        >
+
+            <div class="about-card">
+
+                <span class="section-label">
+                    ABOUT
+                </span>
+
+                <h2>
+                    What is Mosayad Apps?
+                </h2>
+
+                <p>
+
+                    Mosayad Apps is a collection of
+                    browser-based games and useful
+                    applications created by Mohamed Elsayaad.
+
+                    Everything is designed to work directly
+                    in your browser without requiring
+                    complicated installations.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             BOTTOM AD
+             ================================================= -->
+
+        <div class="ad-container">
+
+            <span class="ad-label">
+                Advertisement
+            </span>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-inner">
+
+
+            <div class="footer-brand">
+
+                <img
+                    src="images/logo.png"
+                    alt=""
+                >
+
+                <strong>
+                    Mosayad Apps
+                </strong>
+
+            </div>
+
 
             <p>
-
-                Download complete Python games including the executable,
-                source code, assets, and data files.
-
+                © 2026 Mosayad Apps. All rights reserved.
             </p>
 
         </div>
 
-    </section>
+    </footer>
 
-    <!--========== SEARCH ==========-->
 
-    <section class="search">
+    <!-- =====================================================
+         BACK TO TOP
+         ===================================================== -->
 
-        <input
-            id="search"
-            type="text"
-            placeholder="Search games..."
-        >
-
-    </section>
-
-    <!--========== GAMES ==========-->
-
-    <main>
-
-        <div id="games-container">
-
-            <!-- JavaScript -->
-
-        </div>
-
-    </main>
-
-    <!--========== BACK TO TOP ==========-->
-
-    <button id="top-btn">
+    <button
+        id="top-btn"
+        class="top-button"
+        type="button"
+        aria-label="Back to top"
+        title="Back to top"
+    >
 
         ↑
 
     </button>
 
-    <!--========== FOOTER ==========-->
 
-    <footer>
+    <!-- =====================================================
+         AUDIO
+         ===================================================== -->
 
-        <p>
+    <audio
+        id="click-sound"
+        preload="auto"
+    >
 
-            © 2026 Mosayad Games
-
-        </p>
-
-    </footer>
-
-    <!--========== AUDIO ==========-->
-
-    <audio id="click-sound" preload="auto">
-
-        <source src="sounds/click.mp3" type="audio/mpeg">
+        <source
+            src="sounds/click.mp3"
+            type="audio/mpeg"
+        >
 
     </audio>
 
-    <audio id="hover-sound" preload="auto">
 
-        <source src="sounds/hover.mp3" type="audio/mpeg">
+    <audio
+        id="hover-sound"
+        preload="auto"
+    >
+
+        <source
+            src="sounds/hover.mp3"
+            type="audio/mpeg"
+        >
 
     </audio>
 
-    <script type="module" src="js/app.js"></script>
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        type="module"
+        src="js/app.js"
+    ></script>
+
 
 </body>
 
