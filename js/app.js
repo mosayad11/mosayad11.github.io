@@ -81,6 +81,8 @@ const clickSound =
 const hoverSound =
     document.getElementById("hover-sound");
 
+const backgroundMusic =
+    document.getElementById("background-music");
 
 /* =========================================================
    APPLICATION STATE
@@ -961,6 +963,13 @@ function playSound(audio) {
 
 }
 
+function updateBackgroundMusic() {
+    if (soundEnabled) {
+        backgroundMusic.play().catch(() => {});
+    } else {
+        backgroundMusic.pause();
+    }
+}
 
 /* =========================================================
    CLICK SOUND
@@ -1007,7 +1016,7 @@ function toggleSound() {
 
 
     updateSoundButton();
-
+    updateBackgroundMusic()
 
     if (soundEnabled) {
 
@@ -1491,3 +1500,8 @@ document.addEventListener(
     "DOMContentLoaded",
     init
 );
+
+
+document.addEventListener("click", () => {
+    updateBackgroundMusic()
+});
