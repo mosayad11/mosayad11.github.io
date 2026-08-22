@@ -27,15 +27,6 @@
     },
     
     {
-        "id": "dark_maze",
-        "name": "Dark Maze 3D",
-        "type": "game",
-        "description": "Play the Dark Maze 3D game.",
-        "image": "images/apps/dark_maze.png",
-        "path": "apps/dark_maze/index.html"
-    },
-    
-    {
         "id": "calculator",
         "name": "Calculator",
         "type": "tool",
