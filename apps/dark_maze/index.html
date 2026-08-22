@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07111f"
+    >
+
+    <title>
+        Modern Maze - Mosayad Games
+    </title>
+
+    <link
+        rel="icon"
+        href="../../images/logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<main class="game">
+
+    <div
+        id="game-container"
+        class="game-container"
+    ></div>
+
+
+    <!-- TOP BAR -->
+
+    <header class="top-bar">
+
+        <a
+            href="../../index.html"
+            class="back-button"
+        >
+            ← Mosayad Games
+        </a>
+
+
+        <div class="brand">
+
+            <span class="brand-icon">
+                🧩
+            </span>
+
+            <div>
+
+                <strong>
+                    MODERN MAZE
+                </strong>
+
+                <small>
+                    Find the green door
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <span>
+                    LEVEL
+                </span>
+
+                <strong id="level">
+                    1
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    TIME
+                </span>
+
+                <strong id="timer">
+                    00:00
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    BEST
+                </span>
+
+                <strong id="best">
+                    1
+                </strong>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- CENTER CROSSHAIR -->
+
+    <div class="crosshair">
+
+        <span></span>
+
+    </div>
+
+
+
+    <!-- MESSAGE -->
+
+    <div
+        id="message"
+        class="message"
+    >
+        Find the green door
+    </div>
+
+
+
+    <!-- DESKTOP CONTROLS -->
+
+    <div class="desktop-controls">
+
+        <div class="control-title">
+            CONTROLS
+        </div>
+
+        <div>
+            <b>W A S D</b>
+            Move
+        </div>
+
+        <div>
+            <b>Mouse</b>
+            Look
+        </div>
+
+    </div>
+
+
+
+    <!-- MOBILE JOYSTICK -->
+
+    <div
+        id="joystick"
+        class="joystick"
+    >
+
+        <div
+            id="joystick-knob"
+            class="joystick-knob"
+        ></div>
+
+    </div>
+
+
+    <div class="look-hint">
+        Swipe anywhere to look
+    </div>
+
+
+
+    <!-- START -->
+
+    <section
+        id="start-screen"
+        class="screen"
+    >
+
+        <div class="card">
+
+            <div class="card-icon">
+                🧩
+            </div>
+
+
+            <h1>
+                Modern Maze
+            </h1>
+
+
+            <p>
+                Find the glowing green door
+                and escape the maze.
+            </p>
+
+
+            <div class="features">
+
+                <span>
+                    ✨ Modern 3D
+                </span>
+
+                <span>
+                    🧩 Random Mazes
+                </span>
+
+                <span>
+                    📱 Mobile Support
+                </span>
+
+            </div>
+
+
+            <button
+                id="start-button"
+                class="main-button"
+            >
+                ▶ START GAME
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- LEVEL COMPLETE -->
+
+    <section
+        id="complete-screen"
+        class="screen hidden"
+    >
+
+        <div class="card">
+
+            <div class="card-icon">
+                🟢
+            </div>
+
+
+            <h1>
+                Level Complete!
+            </h1>
+
+
+            <p id="complete-text">
+                Great job!
+            </p>
+
+
+            <button
+                id="next-button"
+                class="main-button"
+            >
+                ▶ NEXT LEVEL
+            </button>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="game.js"></script>
+
+</body>
+
+</html>

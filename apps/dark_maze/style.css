@@ -1,0 +1,1033 @@
+:root {
+
+    --bg:
+        #07111f;
+
+    --panel:
+        rgba(7, 17, 31, 0.82);
+
+    --blue:
+        #38bdf8;
+
+    --cyan:
+        #22d3ee;
+
+    --green:
+        #22ff88;
+
+    --white:
+        #f8fafc;
+
+    --muted:
+        #94a3b8;
+
+}
+
+
+* {
+
+    box-sizing:
+        border-box;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+}
+
+
+html,
+body {
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+    overflow:
+        hidden;
+
+}
+
+
+body {
+
+    background:
+        var(--bg);
+
+    color:
+        var(--white);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    user-select:
+        none;
+
+    -webkit-user-select:
+        none;
+
+    touch-action:
+        none;
+
+}
+
+
+.game {
+
+    position:
+        relative;
+
+    width:
+        100vw;
+
+    height:
+        100vh;
+
+    overflow:
+        hidden;
+
+}
+
+
+.game-container {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+}
+
+
+.game-container canvas {
+
+    display:
+        block;
+
+    width:
+        100% !important;
+
+    height:
+        100% !important;
+
+}
+
+
+/* ===============================
+   TOP BAR
+================================ */
+
+.top-bar {
+
+    position:
+        absolute;
+
+    z-index:
+        20;
+
+    top:
+        0;
+
+    left:
+        0;
+
+    width:
+        100%;
+
+    padding:
+        14px 16px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(3, 8, 17, 0.9),
+            rgba(3, 8, 17, 0)
+        );
+
+    pointer-events:
+        none;
+
+}
+
+
+.back-button {
+
+    pointer-events:
+        auto;
+
+    color:
+        white;
+
+    text-decoration:
+        none;
+
+    padding:
+        10px 14px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(7,17,31,.7);
+
+    font-size:
+        12px;
+
+    font-weight:
+        bold;
+
+    transition:
+        .2s;
+
+}
+
+
+.back-button:hover {
+
+    border-color:
+        var(--cyan);
+
+    color:
+        var(--cyan);
+
+}
+
+
+.brand {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    text-align:
+        center;
+
+}
+
+
+.brand-icon {
+
+    font-size:
+        25px;
+
+}
+
+
+.brand strong {
+
+    display:
+        block;
+
+    font-size:
+        14px;
+
+    letter-spacing:
+        2px;
+
+}
+
+
+.brand small {
+
+    display:
+        block;
+
+    margin-top:
+        2px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+}
+
+
+.stats {
+
+    display:
+        flex;
+
+    gap:
+        6px;
+
+}
+
+
+.stat {
+
+    min-width:
+        55px;
+
+    padding:
+        6px 8px;
+
+    text-align:
+        center;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(7,17,31,.7);
+
+    backdrop-filter:
+        blur(8px);
+
+}
+
+
+.stat span {
+
+    display:
+        block;
+
+    color:
+        var(--muted);
+
+    font-size:
+        7px;
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.stat strong {
+
+    display:
+        block;
+
+    margin-top:
+        2px;
+
+    color:
+        white;
+
+    font-size:
+        14px;
+
+}
+
+
+/* ===============================
+   CROSSHAIR
+================================ */
+
+.crosshair {
+
+    position:
+        absolute;
+
+    z-index:
+        10;
+
+    top:
+        50%;
+
+    left:
+        50%;
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+    transform:
+        translate(-50%, -50%);
+
+    pointer-events:
+        none;
+
+}
+
+
+.crosshair::before,
+.crosshair::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    background:
+        rgba(255,255,255,.75);
+
+}
+
+
+.crosshair::before {
+
+    width:
+        18px;
+
+    height:
+        2px;
+
+    top:
+        8px;
+
+    left:
+        0;
+
+}
+
+
+.crosshair::after {
+
+    width:
+        2px;
+
+    height:
+        18px;
+
+    top:
+        0;
+
+    left:
+        8px;
+
+}
+
+
+/* ===============================
+   MESSAGE
+================================ */
+
+.message {
+
+    position:
+        absolute;
+
+    z-index:
+        15;
+
+    top:
+        85px;
+
+    left:
+        50%;
+
+    transform:
+        translateX(-50%);
+
+    padding:
+        8px 16px;
+
+    border:
+        1px solid
+        rgba(34,255,136,.22);
+
+    border-radius:
+        50px;
+
+    background:
+        rgba(7,17,31,.7);
+
+    color:
+        var(--green);
+
+    font-size:
+        11px;
+
+    font-weight:
+        bold;
+
+    backdrop-filter:
+        blur(8px);
+
+}
+
+
+/* ===============================
+   DESKTOP CONTROLS
+================================ */
+
+.desktop-controls {
+
+    position:
+        absolute;
+
+    z-index:
+        15;
+
+    left:
+        15px;
+
+    bottom:
+        15px;
+
+    padding:
+        12px 15px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(7,17,31,.75);
+
+    backdrop-filter:
+        blur(10px);
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+}
+
+
+.control-title {
+
+    margin-bottom:
+        3px;
+
+    color:
+        var(--cyan);
+
+    font-size:
+        9px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.desktop-controls b {
+
+    color:
+        white;
+
+}
+
+
+/* ===============================
+   MOBILE JOYSTICK
+================================ */
+
+.joystick {
+
+    display:
+        none;
+
+    position:
+        absolute;
+
+    z-index:
+        30;
+
+    left:
+        22px;
+
+    bottom:
+        25px;
+
+    width:
+        115px;
+
+    height:
+        115px;
+
+    border:
+        2px solid
+        rgba(255,255,255,.16);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(7,17,31,.42);
+
+    backdrop-filter:
+        blur(5px);
+
+    touch-action:
+        none;
+
+}
+
+
+.joystick-knob {
+
+    position:
+        absolute;
+
+    top:
+        50%;
+
+    left:
+        50%;
+
+    width:
+        54px;
+
+    height:
+        54px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border:
+        2px solid
+        rgba(56,189,248,.7);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(56,189,248,.25);
+
+    box-shadow:
+        0 0 20px
+        rgba(56,189,248,.2);
+
+}
+
+
+.look-hint {
+
+    display:
+        none;
+
+    position:
+        absolute;
+
+    z-index:
+        15;
+
+    right:
+        15px;
+
+    bottom:
+        22px;
+
+    padding:
+        9px 12px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(7,17,31,.6);
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+}
+
+
+/* ===============================
+   SCREENS
+================================ */
+
+.screen {
+
+    position:
+        absolute;
+
+    z-index:
+        100;
+
+    inset:
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(3,8,17,.55);
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.card {
+
+    width:
+        min(430px, 100%);
+
+    padding:
+        34px 28px;
+
+    border:
+        1px solid
+        rgba(56,189,248,.18);
+
+    border-radius:
+        24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11,27,47,.96),
+            rgba(5,13,24,.97)
+        );
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.45);
+
+    text-align:
+        center;
+
+}
+
+
+.card-icon {
+
+    font-size:
+        58px;
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.card h1 {
+
+    margin-bottom:
+        9px;
+
+    font-size:
+        32px;
+
+}
+
+
+.card p {
+
+    color:
+        var(--muted);
+
+    line-height:
+        1.6;
+
+    font-size:
+        14px;
+
+}
+
+
+.features {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        7px;
+
+    margin:
+        20px 0;
+
+}
+
+
+.features span {
+
+    padding:
+        7px 9px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        8px;
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        9px;
+
+}
+
+
+.main-button {
+
+    width:
+        100%;
+
+    padding:
+        14px;
+
+    border:
+        0;
+
+    border-radius:
+        12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #22d3ee,
+            #38bdf8
+        );
+
+    color:
+        #03111b;
+
+    font-size:
+        13px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1px;
+
+    cursor:
+        pointer;
+
+    transition:
+        .2s;
+
+}
+
+
+.main-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.08);
+
+}
+
+
+.hidden {
+
+    display:
+        none !important;
+
+}
+
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 800px) {
+
+    .desktop-controls {
+
+        display:
+            none;
+
+    }
+
+
+    .joystick {
+
+        display:
+            block;
+
+    }
+
+
+    .look-hint {
+
+        display:
+            block;
+
+    }
+
+
+    .top-bar {
+
+        padding:
+            8px;
+
+        flex-wrap:
+            wrap;
+
+    }
+
+
+    .brand {
+
+        width:
+            100%;
+
+        order:
+            -1;
+
+        justify-content:
+            center;
+
+    }
+
+
+    .back-button {
+
+        padding:
+            8px 10px;
+
+        font-size:
+            10px;
+
+    }
+
+
+    .stat {
+
+        min-width:
+            48px;
+
+    }
+
+
+    .stats {
+
+        margin-left:
+            auto;
+
+    }
+
+
+    .message {
+
+        top:
+            105px;
+
+        font-size:
+            9px;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .joystick {
+
+        width:
+            105px;
+
+        height:
+            105px;
+
+        left:
+            16px;
+
+        bottom:
+            18px;
+
+    }
+
+
+    .joystick-knob {
+
+        width:
+            50px;
+
+        height:
+            50px;
+
+    }
+
+
+    .look-hint {
+
+        right:
+            10px;
+
+        bottom:
+            18px;
+
+    }
+
+
+    .card {
+
+        padding:
+            27px 19px;
+
+    }
+
+
+    .card h1 {
+
+        font-size:
+            27px;
+
+    }
+
+}

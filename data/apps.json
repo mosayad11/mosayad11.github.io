@@ -3,7 +3,7 @@
         "id": "snake",
         "name": "Snake",
         "type": "game",
-        "description": "Play the classic Snake game directly in your browser.",
+        "description": "Play the classic Snake game.",
         "image": "images/apps/snake.png",
         "path": "apps/snake/index.html"
     },
@@ -12,9 +12,27 @@
         "id": "cars",
         "name": "Car Game",
         "type": "game",
-        "description": "Play the classic Snake game directly in your browser.",
+        "description": "Play the classic 2D Car game.",
         "image": "images/apps/car.png",
         "path": "apps/car/index.html"
+    },
+
+    {
+        "id": "8_ball_pool",
+        "name": "8 Ball Pool",
+        "type": "game",
+        "description": "Play the 8 Ball Pool game to get your 8 balls first.",
+        "image": "images/apps/8_ball_pool.jpg",
+        "path": "apps/8_ball_pool/index.html"
+    },
+    
+    {
+        "id": "dark_maze",
+        "name": "Dark Maze 3D",
+        "type": "game",
+        "description": "Play the Dark Maze 3D game.",
+        "image": "images/apps/dark_maze.png",
+        "path": "apps/dark_maze/index.html"
     },
     
     {

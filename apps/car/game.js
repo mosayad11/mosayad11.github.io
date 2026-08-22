@@ -52,9 +52,9 @@ const rightButton =
 
 const LANES = 4;
 
-const PLAYER_BOTTOM = 45;
+const PLAYER_BOTTOM = 20;
 
-const INITIAL_SPEED = 3.2;
+const INITIAL_SPEED = 3;
 
 const MAX_SPEED = 12;
 
@@ -195,19 +195,23 @@ function createRoadLines() {
 
 function getLaneX(lane) {
 
-    /*
-     * Road usable area:
-     * approximately 6% -> 94%
-     */
-
     const roadWidth =
         gameArea.clientWidth;
 
-    const laneWidth =
-        roadWidth * 0.88 / LANES;
+
+    /*
+     * Leave a small safe margin
+     * but use almost the entire road.
+     */
 
     const start =
-        roadWidth * 0.06;
+        roadWidth * 0.08;
+
+    const usableWidth =
+        roadWidth * 0.84;
+
+    const laneWidth =
+        usableWidth / LANES;
 
     return (
         start +
@@ -507,26 +511,54 @@ function checkCollision(
         enemyElement.getBoundingClientRect();
 
     /*
-     * Smaller hitbox makes gameplay
-     * more fair.
+     * ==========================================
+     * EXTRA HITBOX
+     * ==========================================
+     *
+     * The visual cars can stay small,
+     * but their collision area is slightly
+     * larger so small phones don't miss
+     * collisions near the edges.
      */
 
-    const paddingX = 9;
+    const playerPaddingX = 3;
+    const playerPaddingY = 5;
 
-    const paddingY = 12;
+    const enemyPaddingX = 3;
+    const enemyPaddingY = 5;
+
+
+    const playerLeft =
+        p.left - playerPaddingX;
+
+    const playerRight =
+        p.right + playerPaddingX;
+
+    const playerTop =
+        p.top - playerPaddingY;
+
+    const playerBottom =
+        p.bottom + playerPaddingY;
+
+
+    const enemyLeft =
+        e.left - enemyPaddingX;
+
+    const enemyRight =
+        e.right + enemyPaddingX;
+
+    const enemyTop =
+        e.top - enemyPaddingY;
+
+    const enemyBottom =
+        e.bottom + enemyPaddingY;
+
 
     return !(
-        p.right - paddingX <
-            e.left + paddingX ||
-
-        p.left + paddingX >
-            e.right - paddingX ||
-
-        p.bottom - paddingY <
-            e.top + paddingY ||
-
-        p.top + paddingY >
-            e.bottom - paddingY
+        playerRight < enemyLeft ||
+        playerLeft > enemyRight ||
+        playerBottom < enemyTop ||
+        playerTop > enemyBottom
     );
 }
 

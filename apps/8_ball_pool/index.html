@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07110d"
+    >
+
+    <title>
+        8-Ball Pool - Mosayad Games
+    </title>
+
+    <link
+        rel="icon"
+        href="../../images/logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <main class="game-container">
+
+
+        <!-- HEADER -->
+
+        <header class="game-header">
+
+            <a
+                href="../../index.html"
+                class="back-button"
+            >
+                ← Mosayad Games
+            </a>
+
+
+            <div class="game-title">
+
+                <span class="title-ball">
+                    🎱
+                </span>
+
+                <div>
+                    <h1>
+                        8-Ball Pool
+                    </h1>
+
+                    <span>
+                        Player vs Computer
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="score-area">
+
+                <div class="score-box">
+
+                    <span>
+                        SCORE
+                    </span>
+
+                    <strong id="score">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="score-box">
+
+                    <span>
+                        BEST
+                    </span>
+
+                    <strong id="best-score">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- PLAYER INFO -->
+
+        <section class="players-bar">
+
+
+            <div
+                id="player-card"
+                class="player-card active"
+            >
+
+                <div class="player-avatar">
+                    👤
+                </div>
+
+                <div>
+
+                    <strong>
+                        You
+                    </strong>
+
+                    <span id="player-type">
+                        Your turn
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="turn-indicator">
+
+                <span id="turn-text">
+                    YOUR TURN
+                </span>
+
+            </div>
+
+
+
+            <div
+                id="computer-card"
+                class="player-card"
+            >
+
+                <div>
+
+                    <strong>
+                        Computer
+                    </strong>
+
+                    <span id="computer-type">
+                        Waiting
+                    </span>
+
+                </div>
+
+                <div class="player-avatar">
+                    🤖
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- TABLE -->
+
+        <section class="table-wrapper">
+
+
+            <div class="table-shadow"></div>
+
+
+            <div class="pool-table">
+
+
+                <div class="table-rail rail-top"></div>
+                <div class="table-rail rail-bottom"></div>
+                <div class="table-rail rail-left"></div>
+                <div class="table-rail rail-right"></div>
+
+
+                <canvas
+                    id="poolCanvas"
+                ></canvas>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- CONTROLS -->
+
+        <section class="controls-panel">
+
+
+            <div class="power-container">
+
+                <div class="power-header">
+
+                    <span>
+                        SHOT POWER
+                    </span>
+
+                    <strong id="power-value">
+                        50%
+                    </strong>
+
+                </div>
+
+
+                <input
+                    id="power-slider"
+                    type="range"
+                    min="10"
+                    max="100"
+                    value="50"
+                >
+
+            </div>
+
+
+            <button
+                id="shoot-button"
+                class="shoot-button"
+                type="button"
+            >
+
+                🎱 SHOOT
+
+            </button>
+
+
+            <button
+                id="new-game-button"
+                class="new-game-button"
+                type="button"
+            >
+
+                🔄 New Game
+
+            </button>
+
+        </section>
+
+
+
+        <!-- HELP -->
+
+        <section class="help-panel">
+
+            <div>
+                🖱️
+                <span>
+                    Aim with mouse
+                </span>
+            </div>
+
+            <div>
+                👆
+                <span>
+                    Drag on mobile
+                </span>
+            </div>
+
+            <div>
+                💪
+                <span>
+                    Adjust power
+                </span>
+            </div>
+
+        </section>
+
+
+
+        <!-- START SCREEN -->
+
+        <div
+            id="start-screen"
+            class="overlay"
+        >
+
+            <div class="overlay-card">
+
+                <div class="big-ball">
+                    🎱
+                </div>
+
+                <h2>
+                    8-Ball Pool
+                </h2>
+
+                <p>
+                    Beat the computer and
+                    sink the 8-ball last!
+                </p>
+
+                <button
+                    id="start-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    ▶ Start Game
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- GAME OVER -->
+
+        <div
+            id="game-over-screen"
+            class="overlay hidden"
+        >
+
+            <div class="overlay-card">
+
+                <div
+                    id="result-icon"
+                    class="big-ball"
+                >
+                    🏆
+                </div>
+
+                <h2 id="result-title">
+                    You Win!
+                </h2>
+
+                <p id="result-message">
+                    Great game!
+                </p>
+
+                <div class="final-score">
+
+                    <span>
+                        SCORE
+                    </span>
+
+                    <strong id="final-score">
+                        0
+                    </strong>
+
+                </div>
+
+                <button
+                    id="play-again-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    🔄 Play Again
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <script src="game.js"></script>
+
+</body>
+
+</html>
