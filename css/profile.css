@@ -1,0 +1,948 @@
+/* =========================================================
+   MOSAYAD APPS
+   PROFILE PAGE
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            #102d5c 0%,
+            #071321 30%,
+            #03070d 75%
+        );
+
+    color: #fff;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.background-glow {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+
+    border-radius: 50%;
+
+    filter: blur(110px);
+    opacity: 0.16;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-one {
+    top: -180px;
+    left: -120px;
+    background: #1677ff;
+}
+
+.glow-two {
+    right: -180px;
+    bottom: -180px;
+    background: #005eff;
+}
+
+
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
+
+.profile-page {
+    position: relative;
+    z-index: 1;
+
+    width: min(950px, calc(100% - 30px));
+
+    margin: auto;
+
+    padding:
+        35px 0
+        45px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.profile-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+}
+
+.profile-header p {
+    margin-top: 5px;
+
+    color: #8fa1ba;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color: white;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+.back-button:hover {
+    background:
+        rgba(22,119,255,0.18);
+
+    transform:
+        translateX(-3px);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.profile-card,
+.feedback-card {
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius: 24px;
+
+    background:
+        rgba(9,17,29,0.84);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,0.35);
+}
+
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+.profile-card {
+    display: grid;
+
+    grid-template-columns:
+        280px 1fr;
+
+    gap: 45px;
+
+    padding: 40px;
+}
+
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+.avatar-section {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.avatar {
+    width: 165px;
+    height: 165px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #1677ff;
+
+    color: white;
+
+    font-size: 72px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    user-select: none;
+
+    box-shadow:
+        0 0 0 8px rgba(22,119,255,0.08),
+        0 15px 50px rgba(22,119,255,0.25);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   COLOR BUTTON
+   ========================================================= */
+
+.color-button {
+    margin-top: 20px;
+
+    padding:
+        10px 17px;
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color: #dce7f7;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+.color-button:hover {
+    background:
+        rgba(22,119,255,0.15);
+
+    border-color:
+        rgba(22,119,255,0.3);
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* Hide native color input */
+
+#avatar-color {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.section-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 23px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.title-icon {
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.input-group {
+    margin-bottom: 17px;
+}
+
+.input-group label,
+.feedback-form label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #a9b8cc;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    height: 48px;
+
+    padding:
+        0 15px;
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    color: white;
+
+    font-size: 15px;
+
+    transition:
+        0.2s ease;
+}
+
+.input-group input::placeholder {
+    color: #5e6d82;
+}
+
+.input-group input:focus {
+    border-color: #1677ff;
+
+    background:
+        rgba(22,119,255,0.05);
+
+    box-shadow:
+        0 0 0 3px rgba(22,119,255,0.1);
+}
+
+
+/* =========================================================
+   INFO BOX
+   ========================================================= */
+
+.info-box {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    min-height: 55px;
+
+    margin-top: 10px;
+
+    padding:
+        11px 15px;
+
+    border:
+        1px solid rgba(255,255,255,0.06);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,0.025);
+}
+
+.info-label {
+    color: #8293aa;
+
+    font-size: 13px;
+}
+
+.info-value {
+    color: #e8f0fa;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+.user-id {
+    max-width: 55%;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    color: #76adff;
+}
+
+
+/* =========================================================
+   SAVE BUTTON
+   ========================================================= */
+
+.save-button {
+    width: 100%;
+    height: 49px;
+
+    margin-top: 20px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1677ff,
+            #075ed6
+        );
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 25px rgba(22,119,255,0.2);
+
+    transition:
+        0.2s ease;
+}
+
+.save-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(22,119,255,0.3);
+}
+
+.save-button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-message {
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+.status-success {
+    color: #55dc91;
+}
+
+.status-error {
+    color: #ff6868;
+}
+
+
+/* =========================================================
+   FEEDBACK CARD
+   ========================================================= */
+
+.feedback-card {
+    margin-top: 25px;
+
+    padding:
+        32px 35px;
+}
+
+
+/* =========================================================
+   FEEDBACK HEADER
+   ========================================================= */
+
+.feedback-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 25px;
+}
+
+.feedback-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        rgba(22,119,255,0.12);
+
+    font-size: 23px;
+}
+
+.feedback-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+
+    margin-bottom: 5px;
+}
+
+.feedback-header p {
+    color: #8fa1b8;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+.feedback-form textarea {
+    width: 100%;
+
+    min-height: 150px;
+
+    padding: 14px;
+
+    resize: vertical;
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    transition:
+        0.2s ease;
+}
+
+.feedback-form textarea::placeholder {
+    color: #5e6d82;
+}
+
+.feedback-form textarea:focus {
+    border-color: #1677ff;
+
+    background:
+        rgba(22,119,255,0.05);
+
+    box-shadow:
+        0 0 0 3px rgba(22,119,255,0.1);
+}
+
+
+/* =========================================================
+   FEEDBACK BOTTOM
+   ========================================================= */
+
+.feedback-bottom {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 12px;
+}
+
+.character-count {
+    color: #72839a;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   SEND BUTTON
+   ========================================================= */
+
+.send-button {
+    min-width: 120px;
+
+    height: 44px;
+
+    padding:
+        0 20px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1677ff,
+            #075ed6
+        );
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 22px rgba(22,119,255,0.18);
+
+    transition:
+        0.2s ease;
+}
+
+.send-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(22,119,255,0.28);
+}
+
+.send-button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.feedback-success {
+    display: none;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 20px;
+
+    padding: 16px;
+
+    border:
+        1px solid rgba(68,214,133,0.2);
+
+    border-radius: 14px;
+
+    background:
+        rgba(68,214,133,0.06);
+}
+
+.feedback-success.show {
+    display: flex;
+
+    animation:
+        successAppear 0.3s ease;
+}
+
+.success-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #38c978;
+
+    color: white;
+
+    font-weight: 900;
+}
+
+.feedback-success strong {
+    display: block;
+
+    color: #66e49a;
+
+    font-size: 14px;
+}
+
+.feedback-success p {
+    margin-top: 3px;
+
+    color: #93a99c;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes successAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   FEEDBACK STATUS
+   ========================================================= */
+
+.feedback-status {
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.profile-footer {
+    padding-top: 28px;
+
+    color: #53657c;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 750px) {
+
+    .profile-page {
+        width: min(
+            100% - 20px,
+            600px
+        );
+
+        padding-top: 20px;
+    }
+
+
+    .profile-header {
+        margin-bottom: 20px;
+    }
+
+
+    .profile-header h1 {
+        font-size: 25px;
+    }
+
+
+    .profile-header p {
+        font-size: 12px;
+    }
+
+
+    .profile-card {
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        padding:
+            25px 20px;
+
+        border-radius: 20px;
+    }
+
+
+    .avatar {
+        width: 135px;
+        height: 135px;
+
+        font-size: 58px;
+    }
+
+
+    .feedback-card {
+        padding:
+            25px 20px;
+
+        border-radius: 20px;
+    }
+
+
+    .feedback-header {
+        align-items: flex-start;
+    }
+
+
+    .feedback-header h2 {
+        font-size: 18px;
+    }
+
+
+    .info-box {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .info-value {
+        text-align: left;
+    }
+
+
+    .user-id {
+        max-width: 100%;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .profile-page {
+        width:
+            calc(100% - 14px);
+    }
+
+
+    .profile-header {
+        gap: 11px;
+    }
+
+
+    .profile-header h1 {
+        font-size: 22px;
+    }
+
+
+    .back-button {
+        width: 43px;
+        height: 43px;
+    }
+
+
+    .profile-card,
+    .feedback-card {
+        padding:
+            20px 15px;
+    }
+
+
+    .feedback-bottom {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .send-button {
+        width: 100%;
+    }
+}

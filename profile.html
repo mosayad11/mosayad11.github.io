@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Mosayad Apps Profile"
+    >
+
+    <title>My Profile - Mosayad Apps</title>
+
+    <link
+        rel="stylesheet"
+        href="css/profile.css"
+    >
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+
+    <!-- Main Page -->
+    <main class="profile-page">
+
+        <!-- Header -->
+        <header class="profile-header">
+
+            <button
+                class="back-button"
+                id="back-button"
+                type="button"
+                aria-label="Go back"
+            >
+                ←
+            </button>
+
+            <div>
+                <h1>My Profile</h1>
+                <p>Manage your Mosayad Apps account</p>
+            </div>
+
+        </header>
+
+
+        <!-- Profile Card -->
+        <section class="profile-card">
+
+            <!-- Avatar Area -->
+            <div class="avatar-section">
+
+                <div
+                    class="avatar"
+                    id="avatar"
+                >
+                    M
+                </div>
+
+                <button
+                    class="color-button"
+                    id="color-button"
+                    type="button"
+                >
+                    Change Color
+                </button>
+
+                <input
+                    id="avatar-color"
+                    type="color"
+                    value="#1677ff"
+                    aria-label="Choose profile color"
+                >
+
+            </div>
+
+
+            <!-- User Information -->
+            <div class="user-info">
+
+                <div class="section-title">
+                    <span class="title-icon">👤</span>
+                    <span>Account Information</span>
+                </div>
+
+
+                <!-- Name -->
+                <div class="input-group">
+
+                    <label for="name-input">
+                        Name
+                    </label>
+
+                    <input
+                        id="name-input"
+                        type="text"
+                        maxlength="40"
+                        autocomplete="name"
+                        placeholder="Your name"
+                    >
+
+                </div>
+
+
+                <!-- Joined -->
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Joined
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="joined-value"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+
+                <!-- User ID -->
+                <div class="info-box">
+
+                    <div class="info-label">
+                        User ID
+                    </div>
+
+                    <div
+                        class="info-value user-id"
+                        id="user-id-value"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+
+                <!-- Save -->
+                <button
+                    class="save-button"
+                    id="save-button"
+                    type="button"
+                >
+                    Save Changes
+                </button>
+
+                <div
+                    class="status-message"
+                    id="profile-status"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Feedback Card -->
+        <section class="feedback-card">
+
+            <div class="feedback-header">
+
+                <div class="feedback-icon">
+                    💬
+                </div>
+
+                <div>
+                    <h2>Send us your feedback</h2>
+
+                    <p>
+                        Have an idea, suggestion, or something
+                        you want us to improve?
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="feedback-form">
+
+                <label for="feedback-input">
+                    Your message
+                </label>
+
+                <textarea
+                    id="feedback-input"
+                    maxlength="1000"
+                    placeholder="Write your feedback here..."
+                ></textarea>
+
+
+                <div class="feedback-bottom">
+
+                    <span
+                        class="character-count"
+                        id="character-count"
+                    >
+                        0 / 1000
+                    </span>
+
+                    <button
+                        class="send-button"
+                        id="send-button"
+                        type="button"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Feedback Success -->
+            <div
+                class="feedback-success"
+                id="feedback-success"
+            >
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>
+                        Thanks for your feedback!
+                    </strong>
+
+                    <p>
+                        These notes will be sent to Mosayad soon.
+                    </p>
+                </div>
+            </div>
+
+
+            <div
+                class="feedback-status"
+                id="feedback-status"
+            ></div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer class="profile-footer">
+            <span>© Mosayad Apps</span>
+        </footer>
+
+    </main>
+
+
+    <!-- Firebase / Profile Logic -->
+    <script
+        type="module"
+        src="js/profile.js"
+    ></script>
+
+</body>
+
+</html>
