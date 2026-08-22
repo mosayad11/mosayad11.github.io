@@ -25,6 +25,15 @@
         "image": "images/apps/8_ball_pool.jpg",
         "path": "apps/8_ball_pool/index.html"
     },
+
+    {
+        "id": "football",
+        "name": "Football Penalties",
+        "type": "game",
+        "description": "Play the Football Penalties game.",
+        "image": "images/apps/football.jpg",
+        "path": "apps/football/index.html"
+    },
     
     {
         "id": "calculator",

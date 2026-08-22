@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,
+                   maximum-scale=1.0, user-scalable=no">
+
+    <title>Mosayad Penalty</title>
+    
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="game-wrapper">
+
+        <!-- Top Bar -->
+        <header class="top-bar">
+            
+            <div class="brand">
+                <div class="brand-icon">⚽</div>
+                <div>
+                    <h1>Mosayad Penalty</h1>
+                    <span>Penalty Challenge</span>
+                </div>
+            </div>
+
+            <a href="../../index.html" class="back-to-site">
+                ← <span>Back to Mosayad Apps</span>
+            </a>
+
+            <div class="top-controls">
+
+                <div class="score-box">
+                    <span>SCORE</span>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="score-box best-box">
+                    <span>BEST</span>
+                    <strong id="best">0</strong>
+                </div>
+
+                <button id="themeBtn"
+                        class="icon-btn"
+                        aria-label="Change theme">
+                    🌙
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- Game -->
+        <main class="game-area">
+
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- Start Screen -->
+            <section id="startScreen" class="overlay">
+
+                <div class="menu-card">
+
+                    <div class="big-ball">⚽</div>
+
+                    <h2>Penalty Challenge</h2>
+
+                    <p>
+                        Shoot the ball past the goalkeeper!
+                    </p>
+
+                    <div class="instructions">
+
+                        <div>
+                            <span>🖱️</span>
+                            <p>Click the goal to shoot</p>
+                        </div>
+
+                        <div>
+                            <span>⚡</span>
+                            <p>Goalkeeper gets faster</p>
+                        </div>
+
+                        <div>
+                            <span>🏆</span>
+                            <p>Beat your best score</p>
+                        </div>
+
+                    </div>
+
+                    <button id="startBtn" class="main-btn">
+                        START GAME
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- Game Over -->
+            <section id="gameOverScreen"
+                     class="overlay hidden">
+
+                <div class="menu-card">
+
+                    <div class="game-over-icon">🧤</div>
+
+                    <h2>Saved!</h2>
+
+                    <p class="result-text">
+                        The goalkeeper stopped your shot.
+                    </p>
+
+                    <div class="final-score">
+
+                        <div>
+                            <span>SCORE</span>
+                            <strong id="finalScore">0</strong>
+                        </div>
+
+                        <div>
+                            <span>BEST</span>
+                            <strong id="finalBest">0</strong>
+                        </div>
+
+                    </div>
+
+                    <div id="newBest"
+                         class="new-best hidden">
+                        🏆 NEW BEST!
+                    </div>
+
+                    <button id="restartBtn"
+                            class="main-btn">
+                        PLAY AGAIN
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- Game HUD -->
+            <div id="gameHint" class="game-hint hidden">
+                CLICK ANYWHERE IN THE GOAL TO SHOOT
+            </div>
+
+            <div id="levelDisplay"
+                 class="level-display hidden">
+                LEVEL 1
+            </div>
+
+            <div id="message"
+                 class="game-message">
+            </div>
+
+        </main>
+
+        <footer>
+            Mosayad Apps • Penalty Challenge
+        </footer>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>
