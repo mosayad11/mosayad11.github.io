@@ -2,23 +2,24 @@
    MOSAYAD GAMES
    8 BALL POOL - ONLINE MATCH
 
-   NETWORK MODEL
-   ---------------------------------------------------------
-   Host:
+   Firebase:
+   - WebRTC signaling only
+
+   WebRTC:
+   - Shots
+   - Authoritative state
+   - Chat
+   - Game rules
+
+   HOST:
+   - Authoritative physics
    - Authoritative rules
-   - Authoritative turn
    - Authoritative timer
-   - Authoritative final result
 
-   BOTH PLAYERS:
-   - Run the same physics locally
-   - Receive shot commands immediately
-   - Render shots immediately
-   - Receive periodic authoritative corrections
-
-   IMPORTANT:
-   - WebRTC carries game commands/state/chat
-   - Firebase is signaling only
+   GUEST:
+   - Immediate local prediction
+   - Smooth interpolation
+   - Automatic correction from Host
 ========================================================= */
 
 import { db } from "../../js/firebase.js";
@@ -263,14 +264,11 @@ if (themeButton) {
    ROOM STATE
 ========================================================= */
 
-let roomData =
-    null;
+let roomData = null;
 
-let isHost =
-    false;
+let isHost = false;
 
-let opponentId =
-    null;
+let opponentId = null;
 
 let opponentName =
     "Opponent";
@@ -302,14 +300,11 @@ const signalRef =
    WEBRTC
 ========================================================= */
 
-let peer =
-    null;
+let peer = null;
 
-let dataChannel =
-    null;
+let dataChannel = null;
 
-let signalingUnsubscribe =
-    null;
+let signalingUnsubscribe = null;
 
 
 const RTC_CONFIG = {
@@ -341,24 +336,35 @@ const TABLE_WIDTH =
 const TABLE_HEIGHT =
     500;
 
-
-/* =========================================================
-   PHYSICS CONSTANTS
-========================================================= */
-
 const BALL_RADIUS =
     16;
-
-const BALL_DIAMETER =
-    BALL_RADIUS * 2;
 
 const POCKET_RADIUS =
     31;
 
 
+/* =========================================================
+   PHYSICS CONSTANTS
+========================================================= */
+
 /*
-   Friction per physics frame.
+   Velocity is measured in table pixels
+   per physics tick.
+
+   One physics tick ~= 1/60 second.
 */
+
+const PHYSICS_STEP =
+    1 / 60;
+
+const FIXED_STEP_MS =
+    1000 / 60;
+
+
+/*
+   Friction per 60 FPS tick.
+*/
+
 const FRICTION =
     0.986;
 
@@ -366,74 +372,76 @@ const FRICTION =
 /*
    Cushion bounce.
 */
+
 const WALL_BOUNCE =
     0.90;
 
 
 /*
-   Ball collision elasticity.
+   Ball collision restitution.
 */
+
 const BALL_BOUNCE =
-    0.97;
+    0.96;
 
 
 /*
-   Maximum cue velocity.
+   Small velocity threshold.
 */
-const MAX_POWER =
-    28;
 
-
-/*
-   Minimum velocity.
-*/
 const MIN_SPEED =
     0.025;
 
 
 /*
-   Turn timer.
+   Maximum shot velocity.
 */
+
+const MAX_POWER =
+    18;
+
+
+/*
+   Timer.
+*/
+
 const TURN_TIME =
     60;
 
 
 /*
-   Network state rate.
+   Network state frequency.
 */
+
 const NETWORK_UPDATE_RATE =
     40;
 
 
 /*
-   Guest reconciliation.
+   Guest correction speed.
+
+   Larger = stronger correction.
 */
-const INTERPOLATION =
-    0.30;
+
+const REMOTE_CORRECTION =
+    0.20;
 
 
 /*
-   Fixed physics timestep.
-
-   The game does not depend directly
-   on FPS anymore.
+   If prediction differs more than
+   this distance, snap closer.
 */
-const FIXED_DT =
-    1;
+
+const HARD_CORRECTION_DISTANCE =
+    80;
 
 
 /*
-   Maximum physics iterations per frame.
+   Maximum physics substeps per frame.
 */
-const MAX_PHYSICS_STEPS =
-    8;
 
-
-/*
-   Maximum frame time.
-*/
-const MAX_FRAME_DELTA =
-    50;
+const MAX_SUBSTEPS =
+    5;
 
 
 /* =========================================================
@@ -506,37 +514,26 @@ const BALL_COLORS = {
    GAME STATE
 ========================================================= */
 
-let balls =
-    [];
+let balls = [];
 
+let targetBalls = null;
 
-let targetBalls =
-    null;
-
-
-let turn =
-    "host";
-
+let turn = "host";
 
 let turnStartedAt =
     Date.now();
 
+let gameFinished = false;
 
-let gameFinished =
-    false;
+let shotInProgress = false;
 
-
-let shotInProgress =
-    false;
+let winner = null;
 
 
-let winner =
-    null;
+/* =========================================================
+   PLAYER GROUPS
+========================================================= */
 
-
-/*
-   Player groups.
-*/
 let playerGroups = {
 
     host: null,
@@ -546,74 +543,60 @@ let playerGroups = {
 };
 
 
-/*
-   Current shot information.
-*/
-let shotPocketed =
-    [];
+/* =========================================================
+   SHOT STATE
+========================================================= */
 
-let cueBallPocketed =
-    false;
+let shotPocketed = [];
 
-let firstBallHit =
-    null;
+let cueBallPocketed = false;
+
+let firstBallHit = null;
 
 
 /*
-   Current shot ID.
+   Increment every shot.
 
-   Prevents duplicate commands.
+   Helps Guest identify
+   newer states.
 */
-let currentShotId =
-    null;
+
+let shotId = 0;
+
+let localPredictionShotId = 0;
 
 
 /*
-   Last shot ID received.
+   Guest prediction state.
 */
-let lastReceivedShotId =
-    null;
 
-
-/*
-   Prediction state.
-
-   Guest can simulate locally,
-   but only Host can finish the shot.
-*/
-let localPrediction =
-    false;
+let guestPredicting = false;
 
 
 /* =========================================================
-   NETWORK TIMING
+   NETWORK
 ========================================================= */
 
-let lastNetworkUpdate =
-    0;
+let lastNetworkUpdate = 0;
 
-let lastStateReceived =
-    0;
+let lastStateReceived = 0;
 
 
 /* =========================================================
-   ANIMATION TIMING
+   GAME LOOP
 ========================================================= */
 
-let lastTime =
+let lastFrameTime =
     performance.now();
 
-let physicsAccumulator =
-    0;
+let physicsAccumulator = 0;
 
 
 /* =========================================================
    INPUT
 ========================================================= */
 
-let aiming =
-    false;
-
+let aiming = false;
 
 let aimCurrent = {
 
@@ -622,22 +605,7 @@ let aimCurrent = {
 
 };
 
-
-let power =
-    0;
-
-
-/* =========================================================
-   UTILITY
-========================================================= */
-
-function oppositeSide(side) {
-
-    return side === "host"
-        ? "guest"
-        : "host";
-
-}
+let power = 0;
 
 
 /* =========================================================
@@ -699,8 +667,7 @@ function createBall(
 
 function createInitialBalls() {
 
-    balls =
-        [];
+    balls = [];
 
 
     /*
@@ -723,7 +690,6 @@ function createInitialBalls() {
 
     const rackY =
         TABLE_HEIGHT / 2;
-
 
     const spacing =
         BALL_RADIUS * 2.03;
@@ -769,10 +735,12 @@ function createInitialBalls() {
 
             const y =
                 rackY +
+
                 (
                     col -
                     row / 2
                 ) *
+
                 spacing;
 
 
@@ -789,6 +757,40 @@ function createInitialBalls() {
         }
 
     }
+
+}
+
+
+/* =========================================================
+   CLONE BALLS
+========================================================= */
+
+function cloneBalls(source) {
+
+    if (!Array.isArray(source)) {
+
+        return [];
+
+    }
+
+
+    return source.map(
+        ball => ({
+            id: ball.id,
+            number: ball.number,
+            x: ball.x,
+            y: ball.y,
+            vx: ball.vx,
+            vy: ball.vy,
+            radius:
+                ball.radius ||
+                BALL_RADIUS,
+            pocketed:
+                Boolean(ball.pocketed),
+            type:
+                ball.type
+        })
+    );
 
 }
 
@@ -836,31 +838,7 @@ function serializeBalls() {
 
 
 /* =========================================================
-   COPY BALL STATE
-========================================================= */
-
-function cloneBalls(data) {
-
-    if (!Array.isArray(data)) {
-
-        return [];
-
-    }
-
-
-    return data.map(
-        ball => ({
-
-            ...ball
-
-        })
-    );
-
-}
-
-
-/* =========================================================
-   APPLY AUTHORITATIVE STATE
+   APPLY REMOTE BALLS
 ========================================================= */
 
 function applyBalls(data) {
@@ -876,16 +854,12 @@ function applyBalls(data) {
         cloneBalls(data);
 
 
-    lastStateReceived =
-        performance.now();
-
-
     /*
        First state.
     */
 
     if (
-        !balls.length ||
+        balls.length === 0 ||
         balls.length !==
         targetBalls.length
     ) {
@@ -901,7 +875,7 @@ function applyBalls(data) {
 
 
     /*
-       Add missing balls.
+       Update existing balls.
     */
 
     for (
@@ -919,11 +893,29 @@ function applyBalls(data) {
 
         if (!localBall) {
 
-            balls.push({
+            balls.push(
+                {
+                    ...remoteBall
+                }
+            );
 
-                ...remoteBall
+            continue;
 
-            });
+        }
+
+
+        /*
+           Pocket state must be
+           immediately synchronized.
+        */
+
+        if (
+            remoteBall.pocketed !==
+            localBall.pocketed
+        ) {
+
+            localBall.pocketed =
+                remoteBall.pocketed;
 
         }
 
@@ -933,10 +925,10 @@ function applyBalls(data) {
 
 
 /* =========================================================
-   GUEST RECONCILIATION
+   RECONCILE GUEST
 ========================================================= */
 
-function interpolateRemoteBalls() {
+function reconcileGuestBalls() {
 
     if (
         isHost ||
@@ -953,15 +945,19 @@ function interpolateRemoteBalls() {
         of targetBalls
     ) {
 
-        const ball =
+        const local =
             balls.find(
-                item =>
-                    item.id ===
+                ball =>
+                    ball.id ===
                     target.id
             );
 
 
-        if (!ball) {
+        if (!local) {
+
+            balls.push({
+                ...target
+            });
 
             continue;
 
@@ -969,25 +965,24 @@ function interpolateRemoteBalls() {
 
 
         /*
-           Pocketed balls must be
-           immediately synchronized.
+           Pocketed balls are authoritative.
         */
 
         if (target.pocketed) {
 
-            ball.pocketed =
+            local.pocketed =
                 true;
 
-            ball.x =
+            local.x =
                 target.x;
 
-            ball.y =
+            local.y =
                 target.y;
 
-            ball.vx =
+            local.vx =
                 0;
 
-            ball.vy =
+            local.vy =
                 0;
 
             continue;
@@ -995,41 +990,17 @@ function interpolateRemoteBalls() {
         }
 
 
-        /*
-           If ball was previously
-           pocketed, restore it.
-        */
-
-        if (ball.pocketed) {
-
-            ball.pocketed =
-                false;
-
-            ball.x =
-                target.x;
-
-            ball.y =
-                target.y;
-
-            ball.vx =
-                target.vx;
-
-            ball.vy =
-                target.vy;
-
-            continue;
-
-        }
+        local.pocketed =
+            false;
 
 
         const dx =
             target.x -
-            ball.x;
+            local.x;
 
         const dy =
             target.y -
-            ball.y;
-
+            local.y;
 
         const distance =
             Math.hypot(
@@ -1039,35 +1010,44 @@ function interpolateRemoteBalls() {
 
 
         /*
-           Large correction:
-           teleport to authoritative state.
+           Large error:
+           hard correction.
         */
 
-        if (distance > 80) {
+        if (
+            distance >
+            HARD_CORRECTION_DISTANCE
+        ) {
 
-            ball.x =
+            local.x =
                 target.x;
 
-            ball.y =
+            local.y =
                 target.y;
 
         }
+
         else {
 
             /*
-               During prediction we don't
-               want to completely overwrite
-               local movement every snapshot.
+               Smooth correction.
+
+               While prediction is active,
+               don't completely overwrite
+               local movement.
             */
 
             const correction =
-                INTERPOLATION;
+                guestPredicting
+                    ? REMOTE_CORRECTION
+                    : 0.45;
 
-            ball.x +=
+
+            local.x +=
                 dx *
                 correction;
 
-            ball.y +=
+            local.y +=
                 dy *
                 correction;
 
@@ -1075,47 +1055,16 @@ function interpolateRemoteBalls() {
 
 
         /*
-           Velocity follows Host.
+           Velocity correction.
         */
 
-        ball.vx +=
-            (
-                target.vx -
-                ball.vx
-            ) *
-            0.45;
+        local.vx =
+            target.vx;
 
-        ball.vy +=
-            (
-                target.vy -
-                ball.vy
-            ) *
-            0.45;
+        local.vy =
+            target.vy;
 
     }
-
-}
-
-
-/* =========================================================
-   HARD SYNC BALLS
-========================================================= */
-
-function hardSyncBalls(data) {
-
-    if (!Array.isArray(data)) {
-
-        return;
-
-    }
-
-
-    balls =
-        cloneBalls(data);
-
-
-    targetBalls =
-        cloneBalls(data);
 
 }
 
@@ -1136,7 +1085,7 @@ function getCueBall() {
 
 
 /* =========================================================
-   GET MY SIDE
+   PLAYER SIDE
 ========================================================= */
 
 function getMySide() {
@@ -1184,43 +1133,14 @@ function canCurrentPlayerShoot() {
 
 
 /* =========================================================
-   GENERATE SHOT ID
-========================================================= */
-
-function generateShotId() {
-
-    return (
-
-        Date.now().toString(36) +
-
-        "-" +
-
-        Math.random()
-            .toString(36)
-            .slice(2, 10)
-
-    );
-
-}
-
-
-/* =========================================================
-   START LOCAL SHOT PHYSICS
+   START LOCAL SHOT
 ========================================================= */
 
 function startLocalShot(
     angle,
     shotPower,
-    shooter,
-    shotId
+    shooter
 ) {
-
-    if (gameFinished) {
-
-        return false;
-
-    }
-
 
     const cue =
         getCueBall();
@@ -1233,45 +1153,17 @@ function startLocalShot(
     }
 
 
-    /*
-       Reset shot tracking.
-    */
+    shotPocketed = [];
 
-    shotPocketed =
-        [];
+    cueBallPocketed = false;
 
-    cueBallPocketed =
-        false;
+    firstBallHit = null;
 
-    firstBallHit =
-        null;
-
-
-    currentShotId =
-        shotId;
-
-
-    shotInProgress =
-        true;
-
-
-    localPrediction =
-        !isHost;
-
-
-    /*
-       Set cue velocity.
-
-       IMPORTANT:
-       Both players perform the exact
-       same calculation.
-    */
 
     cue.vx =
         Math.cos(angle) *
         MAX_POWER *
         shotPower;
-
 
     cue.vy =
         Math.sin(angle) *
@@ -1279,8 +1171,17 @@ function startLocalShot(
         shotPower;
 
 
-    aiming =
-        false;
+    shotInProgress = true;
+
+
+    if (!isHost) {
+
+        guestPredicting = true;
+
+        localPredictionShotId =
+            shotId + 1;
+
+    }
 
 
     return true;
@@ -1289,14 +1190,13 @@ function startLocalShot(
 
 
 /* =========================================================
-   EXECUTE SHOT - HOST
+   EXECUTE HOST SHOT
 ========================================================= */
 
 function executeShot(
     angle,
     shotPower,
-    shooter,
-    shotId = null
+    shooter
 ) {
 
     if (
@@ -1311,8 +1211,7 @@ function executeShot(
 
 
     if (
-        shooter !==
-        turn
+        shooter !== turn
     ) {
 
         return;
@@ -1320,32 +1219,11 @@ function executeShot(
     }
 
 
-    const cue =
-        getCueBall();
-
-
-    if (!cue) {
-
-        return;
-
-    }
-
-
-    const id =
-        shotId ||
-        generateShotId();
-
-
-    /*
-       Start Host physics immediately.
-    */
-
     const started =
         startLocalShot(
             angle,
             shotPower,
-            shooter,
-            id
+            shooter
         );
 
 
@@ -1356,36 +1234,8 @@ function executeShot(
     }
 
 
-    /*
-       Tell Guest to start the same
-       shot immediately.
+    shotId++;
 
-       This is the main improvement.
-    */
-
-    sendMessage({
-
-        type:
-            "shot",
-
-        shotId:
-            id,
-
-        shooter:
-            shooter,
-
-        angle:
-            angle,
-
-        power:
-            shotPower
-
-    });
-
-
-    /*
-       Send state immediately too.
-    */
 
     broadcastState();
 
@@ -1393,7 +1243,7 @@ function executeShot(
 
 
 /* =========================================================
-   GUEST SEND SHOT
+   SEND SHOT
 ========================================================= */
 
 function shoot(
@@ -1412,14 +1262,9 @@ function shoot(
         getMySide();
 
 
-    const shotId =
-        generateShotId();
-
-
     /*
-       HOST
-
-       Execute immediately.
+       HOST:
+       execute immediately.
     */
 
     if (isHost) {
@@ -1427,8 +1272,7 @@ function shoot(
         executeShot(
             angle,
             shotPower,
-            "host",
-            shotId
+            "host"
         );
 
         return;
@@ -1437,22 +1281,24 @@ function shoot(
 
 
     /*
-       GUEST
+       GUEST:
 
        IMPORTANT:
-       Start the physics locally BEFORE
-       waiting for the Host.
 
-       So the player sees the shot
+       First run the shot locally.
+
+       The player sees the shot
        immediately.
+
+       Then send the command
+       to Host.
     */
 
     const started =
         startLocalShot(
             angle,
             shotPower,
-            "guest",
-            shotId
+            "guest"
         );
 
 
@@ -1463,34 +1309,31 @@ function shoot(
     }
 
 
-    /*
-       Tell Host.
-    */
+    localPredictionShotId =
+        shotId + 1;
+
 
     sendMessage({
 
         type:
             "shot",
 
-        shotId:
-            shotId,
-
         shooter:
-            mySide,
+            "guest",
 
         angle:
             angle,
 
         power:
-            shotPower
+            shotPower,
+
+        clientShotId:
+            localPredictionShotId
 
     });
 
 
-    /*
-       The Host will later send the
-       authoritative state.
-    */
+    updateTurnUI();
 
 }
 
@@ -1530,19 +1373,10 @@ canvas.addEventListener(
 
         const distance =
             Math.hypot(
-
-                point.x -
-                cue.x,
-
-                point.y -
-                cue.y
-
+                point.x - cue.x,
+                point.y - cue.y
             );
 
-
-        /*
-           Allow aiming near cue.
-        */
 
         if (
             distance >
@@ -1554,16 +1388,12 @@ canvas.addEventListener(
         }
 
 
-        aiming =
-            true;
-
+        aiming = true;
 
         aimCurrent =
             point;
 
-
-        power =
-            0;
+        power = 0;
 
 
         canvas.setPointerCapture(
@@ -1658,8 +1488,7 @@ canvas.addEventListener(
         }
 
 
-        aiming =
-            false;
+        aiming = false;
 
 
         if (
@@ -1681,8 +1510,7 @@ canvas.addEventListener(
 
         if (!cue) {
 
-            power =
-                0;
+            power = 0;
 
             return;
 
@@ -1692,7 +1520,6 @@ canvas.addEventListener(
         let dx =
             cue.x -
             aimCurrent.x;
-
 
         let dy =
             cue.y -
@@ -1711,8 +1538,7 @@ canvas.addEventListener(
             power < 0.03
         ) {
 
-            power =
-                0;
+            power = 0;
 
             if (powerFill) {
 
@@ -1727,16 +1553,12 @@ canvas.addEventListener(
 
 
         /*
-           Pull-back aiming.
-
-           The shot direction is
-           opposite the pointer.
+           Shot direction.
         */
 
         dx =
             -dx /
             distance;
-
 
         dy =
             -dy /
@@ -1750,18 +1572,13 @@ canvas.addEventListener(
             );
 
 
-        const shotPower =
-            power;
-
-
         shoot(
             angle,
-            shotPower
+            power
         );
 
 
-        power =
-            0;
+        power = 0;
 
 
         if (powerFill) {
@@ -1786,12 +1603,9 @@ canvas.addEventListener(
     "pointercancel",
     () => {
 
-        aiming =
-            false;
+        aiming = false;
 
-        power =
-            0;
-
+        power = 0;
 
         if (powerFill) {
 
@@ -1805,10 +1619,12 @@ canvas.addEventListener(
 
 
 /* =========================================================
-   PHYSICS UPDATE
+   PHYSICS STEP
 ========================================================= */
 
-function updatePhysics(dt) {
+function physicsStep(
+    localAuthoritative
+) {
 
     if (
         !shotInProgress ||
@@ -1821,7 +1637,7 @@ function updatePhysics(dt) {
 
 
     /*
-       Move every ball.
+       Move balls.
     */
 
     for (
@@ -1835,25 +1651,18 @@ function updatePhysics(dt) {
         }
 
 
-        /*
-           Position.
-        */
-
         ball.x +=
-            ball.vx *
-            dt;
-
+            ball.vx;
 
         ball.y +=
-            ball.vy *
-            dt;
+            ball.vy;
 
 
         /*
            Friction.
 
-           Fixed-step physics makes this
-           deterministic.
+           Do not apply huge friction
+           to very slow balls.
         */
 
         ball.vx *=
@@ -1863,17 +1672,12 @@ function updatePhysics(dt) {
             FRICTION;
 
 
-        /*
-           Stop tiny velocities.
-        */
-
         if (
             Math.abs(ball.vx) <
             MIN_SPEED
         ) {
 
-            ball.vx =
-                0;
+            ball.vx = 0;
 
         }
 
@@ -1883,15 +1687,10 @@ function updatePhysics(dt) {
             MIN_SPEED
         ) {
 
-            ball.vy =
-                0;
+            ball.vy = 0;
 
         }
 
-
-        /*
-           Rails.
-        */
 
         handleRailCollision(
             ball
@@ -1903,8 +1702,8 @@ function updatePhysics(dt) {
     /*
        Multiple collision passes.
 
-       This helps when 3+ balls collide
-       at the same time.
+       This greatly improves
+       dense rack collisions.
     */
 
     for (
@@ -1918,20 +1717,141 @@ function updatePhysics(dt) {
     }
 
 
+    checkPockets();
+
+
     /*
-       Pocket detection.
+       Stop only when every ball
+       has practically stopped.
     */
 
-    checkPockets();
+    if (
+        areAllBallsStopped()
+    ) {
+
+        if (localAuthoritative) {
+
+            finishShot();
+
+        }
+        else {
+
+            /*
+               Guest prediction can stop locally.
+
+               Host will still send the
+               authoritative final state.
+            */
+
+            shotInProgress =
+                false;
+
+            guestPredicting =
+                false;
+
+            updateTurnUI();
+
+        }
+
+    }
 
 }
 
 
 /* =========================================================
-   HAS MOVING BALLS
+   UPDATE PHYSICS
 ========================================================= */
 
-function hasMovingBalls() {
+function updatePhysics(
+    realDelta
+) {
+
+    if (
+        !shotInProgress ||
+        gameFinished
+    ) {
+
+        return;
+
+    }
+
+
+    physicsAccumulator +=
+        realDelta;
+
+
+    /*
+       Avoid a giant catch-up after
+       browser tab switching.
+    */
+
+    if (
+        physicsAccumulator >
+        0.15
+    ) {
+
+        physicsAccumulator =
+            0.15;
+
+    }
+
+
+    let steps = 0;
+
+
+    while (
+        physicsAccumulator >=
+        PHYSICS_STEP &&
+        steps < MAX_SUBSTEPS
+    ) {
+
+        physicsStep(
+            isHost
+        );
+
+
+        physicsAccumulator -=
+            PHYSICS_STEP;
+
+
+        steps++;
+
+    }
+
+
+    /*
+       Host sends state.
+    */
+
+    if (isHost) {
+
+        const now =
+            performance.now();
+
+
+        if (
+            now -
+            lastNetworkUpdate >=
+            NETWORK_UPDATE_RATE
+        ) {
+
+            lastNetworkUpdate =
+                now;
+
+            broadcastState();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   ALL BALLS STOPPED
+========================================================= */
+
+function areAllBallsStopped() {
 
     for (
         const ball of balls
@@ -1952,14 +1872,14 @@ function hasMovingBalls() {
                 MIN_SPEED
         ) {
 
-            return true;
+            return false;
 
         }
 
     }
 
 
-    return false;
+    return true;
 
 }
 
@@ -1968,45 +1888,35 @@ function hasMovingBalls() {
    RAIL COLLISION
 ========================================================= */
 
-function handleRailCollision(ball) {
-
-    if (ball.pocketed) {
-
-        return;
-
-    }
-
-
-    /*
-       Pocket openings.
-
-       If a ball is close enough to
-       a pocket, don't force it against
-       the cushion.
-    */
-
-    const nearPocket =
-        isNearPocketOpening(
-            ball
-        );
-
+function handleRailCollision(
+    ball
+) {
 
     const edge =
-        BALL_RADIUS + 9;
+        BALL_RADIUS + 8;
 
 
     /*
-       LEFT.
+       Left.
     */
 
-    if (ball.x < edge) {
+    if (
+        ball.x <
+        edge
+    ) {
 
-        if (!nearPocket) {
+        if (
+            !isNearCornerOrPocket(
+                ball
+            )
+        ) {
 
             ball.x =
                 edge;
 
-            if (ball.vx < 0) {
+            if (
+                ball.vx < 0
+            ) {
 
                 ball.vx =
                     -ball.vx *
@@ -2020,7 +1930,7 @@ function handleRailCollision(ball) {
 
 
     /*
-       RIGHT.
+       Right.
     */
 
     if (
@@ -2028,13 +1938,19 @@ function handleRailCollision(ball) {
         TABLE_WIDTH - edge
     ) {
 
-        if (!nearPocket) {
+        if (
+            !isNearCornerOrPocket(
+                ball
+            )
+        ) {
 
             ball.x =
                 TABLE_WIDTH -
                 edge;
 
-            if (ball.vx > 0) {
+            if (
+                ball.vx > 0
+            ) {
 
                 ball.vx =
                     -ball.vx *
@@ -2048,17 +1964,26 @@ function handleRailCollision(ball) {
 
 
     /*
-       TOP.
+       Top.
     */
 
-    if (ball.y < edge) {
+    if (
+        ball.y <
+        edge
+    ) {
 
-        if (!nearPocket) {
+        if (
+            !isNearCornerOrPocket(
+                ball
+            )
+        ) {
 
             ball.y =
                 edge;
 
-            if (ball.vy < 0) {
+            if (
+                ball.vy < 0
+            ) {
 
                 ball.vy =
                     -ball.vy *
@@ -2072,7 +1997,7 @@ function handleRailCollision(ball) {
 
 
     /*
-       BOTTOM.
+       Bottom.
     */
 
     if (
@@ -2080,13 +2005,19 @@ function handleRailCollision(ball) {
         TABLE_HEIGHT - edge
     ) {
 
-        if (!nearPocket) {
+        if (
+            !isNearCornerOrPocket(
+                ball
+            )
+        ) {
 
             ball.y =
                 TABLE_HEIGHT -
                 edge;
 
-            if (ball.vy > 0) {
+            if (
+                ball.vy > 0
+            ) {
 
                 ball.vy =
                     -ball.vy *
@@ -2102,10 +2033,12 @@ function handleRailCollision(ball) {
 
 
 /* =========================================================
-   POCKET OPENING CHECK
+   POCKET / CORNER CHECK
 ========================================================= */
 
-function isNearPocketOpening(ball) {
+function isNearCornerOrPocket(
+    ball
+) {
 
     for (
         const pocket of pockets
@@ -2125,7 +2058,7 @@ function isNearPocketOpening(ball) {
 
         if (
             distance <
-            POCKET_RADIUS * 1.75
+            POCKET_RADIUS * 1.7
         ) {
 
             return true;
@@ -2141,10 +2074,14 @@ function isNearPocketOpening(ball) {
 
 
 /* =========================================================
-   BALL COLLISIONS
+   BALL COLLISION
 ========================================================= */
 
 function resolveBallCollisions() {
+
+    const minimumDistance =
+        BALL_RADIUS * 2;
+
 
     for (
         let i = 0;
@@ -2184,7 +2121,6 @@ function resolveBallCollisions() {
                 b.x -
                 a.x;
 
-
             let dy =
                 b.y -
                 a.y;
@@ -2197,12 +2133,8 @@ function resolveBallCollisions() {
                 );
 
 
-            const minimumDistance =
-                BALL_DIAMETER;
-
-
             /*
-               Prevent division by zero.
+               Prevent zero-distance NaN.
             */
 
             if (
@@ -2210,14 +2142,11 @@ function resolveBallCollisions() {
                 0.0001
             ) {
 
-                dx =
-                    0.001;
+                dx = 0.001;
 
-                dy =
-                    0;
+                dy = 0;
 
-                distance =
-                    0.001;
+                distance = 0.001;
 
             }
 
@@ -2233,13 +2162,12 @@ function resolveBallCollisions() {
 
 
             /*
-               Normal from A -> B.
+               Normal points from A to B.
             */
 
             const nx =
                 dx /
                 distance;
-
 
             const ny =
                 dy /
@@ -2247,11 +2175,172 @@ function resolveBallCollisions() {
 
 
             /*
-               First object ball hit
-               by cue ball.
+               Positional correction.
+
+               This is extremely important.
+
+               It prevents balls from
+               remaining inside each other.
             */
 
-            if (!firstBallHit) {
+            const overlap =
+                minimumDistance -
+                distance;
+
+
+            const correction =
+                overlap *
+                0.52;
+
+
+            a.x -=
+                nx *
+                correction;
+
+            a.y -=
+                ny *
+                correction;
+
+
+            b.x +=
+                nx *
+                correction;
+
+            b.y +=
+                ny *
+                correction;
+
+
+            /*
+               Relative velocity.
+
+               va - vb.
+
+               If positive along normal,
+               balls are moving toward each other.
+            */
+
+            const relativeVx =
+                a.vx -
+                b.vx;
+
+            const relativeVy =
+                a.vy -
+                b.vy;
+
+
+            const velocityAlongNormal =
+                relativeVx * nx +
+                relativeVy * ny;
+
+
+            /*
+               IMPORTANT:
+
+               The old code had this
+               condition backwards.
+
+               If <= 0, the balls are
+               separating already.
+            */
+
+            if (
+                velocityAlongNormal <=
+                0
+            ) {
+
+                continue;
+
+            }
+
+
+            /*
+               Equal mass impulse.
+            */
+
+            const impulse =
+                (
+                    1 +
+                    BALL_BOUNCE
+                ) *
+                velocityAlongNormal /
+                2;
+
+
+            a.vx -=
+                impulse *
+                nx;
+
+            a.vy -=
+                impulse *
+                ny;
+
+
+            b.vx +=
+                impulse *
+                nx;
+
+            b.vy +=
+                impulse *
+                ny;
+
+
+            /*
+               Tiny tangent damping.
+
+               Makes the collision
+               look more natural.
+            */
+
+            const tangentX =
+                -ny;
+
+            const tangentY =
+                nx;
+
+
+            const tangentRelative =
+                relativeVx *
+                tangentX +
+
+                relativeVy *
+                tangentY;
+
+
+            const tangentFriction =
+                0.015;
+
+
+            const tangentImpulse =
+                tangentRelative *
+                tangentFriction;
+
+
+            a.vx -=
+                tangentImpulse *
+                tangentX;
+
+            a.vy -=
+                tangentImpulse *
+                tangentY;
+
+
+            b.vx +=
+                tangentImpulse *
+                tangentX;
+
+            b.vy +=
+                tangentImpulse *
+                tangentY;
+
+
+            /*
+               Register first cue hit.
+            */
+
+            if (
+                firstBallHit === null
+            ) {
 
                 if (
                     a.number === 0 &&
@@ -2274,161 +2363,6 @@ function resolveBallCollisions() {
                 }
 
             }
-
-
-            /*
-               Separate overlapping balls.
-            */
-
-            const overlap =
-                minimumDistance -
-                distance;
-
-
-            const correction =
-                overlap / 2;
-
-
-            a.x -=
-                nx *
-                correction;
-
-
-            a.y -=
-                ny *
-                correction;
-
-
-            b.x +=
-                nx *
-                correction;
-
-
-            b.y +=
-                ny *
-                correction;
-
-
-            /*
-               ------------------------------------------------
-               IMPORTANT FIX
-               ------------------------------------------------
-
-               Relative velocity is B - A.
-
-               If velocityAlongNormal < 0,
-               balls are moving toward each other.
-
-               The old code used A - B and then
-               reversed the condition, causing many
-               collisions to be ignored.
-            */
-
-            const relativeVx =
-                b.vx -
-                a.vx;
-
-
-            const relativeVy =
-                b.vy -
-                a.vy;
-
-
-            const velocityAlongNormal =
-                relativeVx * nx +
-                relativeVy * ny;
-
-
-            /*
-               Already moving apart.
-            */
-
-            if (
-                velocityAlongNormal >=
-                0
-            ) {
-
-                continue;
-
-            }
-
-
-            /*
-               Equal mass elastic collision.
-            */
-
-            const impulse =
-                -(
-                    1 +
-                    BALL_BOUNCE
-                ) *
-                velocityAlongNormal /
-                2;
-
-
-            a.vx -=
-                impulse *
-                nx;
-
-
-            a.vy -=
-                impulse *
-                ny;
-
-
-            b.vx +=
-                impulse *
-                nx;
-
-
-            b.vy +=
-                impulse *
-                ny;
-
-
-            /*
-               Tangential friction.
-
-               This prevents completely unrealistic
-               sliding behavior.
-            */
-
-            const tx =
-                -ny;
-
-
-            const ty =
-                nx;
-
-
-            const tangentVelocity =
-                relativeVx * tx +
-                relativeVy * ty;
-
-
-            const tangentImpulse =
-                tangentVelocity *
-                0.015;
-
-
-            a.vx +=
-                tangentImpulse *
-                tx;
-
-
-            a.vy +=
-                tangentImpulse *
-                ty;
-
-
-            b.vx -=
-                tangentImpulse *
-                tx;
-
-
-            b.vy -=
-                tangentImpulse *
-                ty;
 
         }
 
@@ -2455,30 +2389,20 @@ function checkPockets() {
 
 
         for (
-            const pocket
-            of pockets
+            const pocket of pockets
         ) {
-
-            const dx =
-                ball.x -
-                pocket.x;
-
-
-            const dy =
-                ball.y -
-                pocket.y;
-
 
             const distance =
                 Math.hypot(
-                    dx,
-                    dy
+
+                    ball.x -
+                    pocket.x,
+
+                    ball.y -
+                    pocket.y
+
                 );
 
-
-            /*
-               Pocket entry.
-            */
 
             if (
                 distance <
@@ -2521,24 +2445,21 @@ function pocketBall(
         true;
 
 
+    ball.vx = 0;
+
+    ball.vy = 0;
+
+
     /*
-       Put it visually in pocket.
+       Put the ball visually
+       inside the pocket.
     */
 
     ball.x =
         pocket.x;
 
-
     ball.y =
         pocket.y;
-
-
-    ball.vx =
-        0;
-
-
-    ball.vy =
-        0;
 
 
     if (
@@ -2573,9 +2494,10 @@ function groupBallsLeft(
 
             !ball.pocketed &&
 
-            ball.type ===
-            group
-
+            (
+                ball.type ===
+                group
+            )
     );
 
 }
@@ -2587,11 +2509,6 @@ function groupBallsLeft(
 
 function finishShot() {
 
-    /*
-       Only Host can decide
-       the result of a shot.
-    */
-
     if (
         !isHost ||
         !shotInProgress
@@ -2602,47 +2519,7 @@ function finishShot() {
     }
 
 
-    /*
-       Make sure every tiny velocity
-       is zero.
-    */
-
-    for (
-        const ball of balls
-    ) {
-
-        if (!ball.pocketed) {
-
-            if (
-                Math.abs(ball.vx) <
-                MIN_SPEED
-            ) {
-
-                ball.vx =
-                    0;
-
-            }
-
-            if (
-                Math.abs(ball.vy) <
-                MIN_SPEED
-            ) {
-
-                ball.vy =
-                    0;
-
-            }
-
-        }
-
-    }
-
-
     shotInProgress =
-        false;
-
-
-    localPrediction =
         false;
 
 
@@ -2655,9 +2532,7 @@ function finishShot() {
 
 
     /*
-       ------------------------------------------------------
-       SCRATCH
-       ------------------------------------------------------
+       Scratch.
     */
 
     if (cueBallPocketed) {
@@ -2674,18 +2549,14 @@ function finishShot() {
             cue.pocketed =
                 false;
 
-
             cue.x =
                 250;
-
 
             cue.y =
                 TABLE_HEIGHT / 2;
 
-
             cue.vx =
                 0;
-
 
             cue.vy =
                 0;
@@ -2696,9 +2567,7 @@ function finishShot() {
 
 
     /*
-       ------------------------------------------------------
-       8 BALL
-       ------------------------------------------------------
+       8 BALL.
     */
 
     if (
@@ -2713,7 +2582,7 @@ function finishShot() {
 
         const canWin =
 
-            group &&
+            group !== null &&
 
             !groupBallsLeft(
                 group
@@ -2727,12 +2596,15 @@ function finishShot() {
             );
 
         }
+
         else {
 
             finishGame(
-                oppositeSide(
-                    shooter
-                )
+
+                shooter === "host"
+                    ? "guest"
+                    : "host"
+
             );
 
         }
@@ -2740,30 +2612,14 @@ function finishShot() {
 
         broadcastState();
 
-
-        /*
-           Reset shot data.
-        */
-
-        shotPocketed =
-            [];
-
-        cueBallPocketed =
-            false;
-
-        firstBallHit =
-            null;
-
-
         return;
 
     }
 
 
     /*
-       ------------------------------------------------------
-       ASSIGN GROUPS
-       ------------------------------------------------------
+       Assign groups on first
+       legal object ball pocket.
     */
 
     if (
@@ -2778,7 +2634,9 @@ function finishShot() {
             );
 
 
-        if (firstObject) {
+        if (
+            firstObject
+        ) {
 
             const selectedGroup =
                 firstObject <= 7
@@ -2793,9 +2651,9 @@ function finishShot() {
 
 
             playerGroups[
-                oppositeSide(
-                    shooter
-                )
+                shooter === "host"
+                    ? "guest"
+                    : "host"
             ] =
 
                 selectedGroup ===
@@ -2811,10 +2669,8 @@ function finishShot() {
 
 
     /*
-       ------------------------------------------------------
-       CHECK WHETHER PLAYER POCKETED
-       HIS OWN GROUP
-       ------------------------------------------------------
+       Check if player pocketed
+       at least one of their balls.
     */
 
     const playerGroup =
@@ -2824,28 +2680,20 @@ function finishShot() {
 
 
     if (
-
         playerGroup &&
 
         shotPocketed.some(
-            number => {
+            number =>
 
-                const type =
+                (
                     number <= 7
                         ? "solid"
-                        : "stripe";
-
-
-                return (
-                    type ===
-                    playerGroup
-                );
-
-            }
+                        : "stripe"
+                ) ===
+                playerGroup
         ) &&
 
         !cueBallPocketed
-
     ) {
 
         keepTurn =
@@ -2855,10 +2703,12 @@ function finishShot() {
 
 
     /*
-       Scratch always changes turn.
+       Scratch loses turn.
     */
 
-    if (cueBallPocketed) {
+    if (
+        cueBallPocketed
+    ) {
 
         keepTurn =
             false;
@@ -2867,52 +2717,31 @@ function finishShot() {
 
 
     /*
-       If player did not pocket his own
-       ball, turn changes.
+       No pocketed ball =
+       change turn.
+
+       Opponent's ball =
+       change turn.
     */
 
     if (!keepTurn) {
 
         turn =
-            oppositeSide(
-                shooter
-            );
+            shooter === "host"
+                ? "guest"
+                : "host";
 
     }
 
-
-    /*
-       New turn timer.
-    */
 
     turnStartedAt =
         Date.now();
 
 
-    /*
-       Reset shot data.
-    */
-
-    shotPocketed =
-        [];
-
-    cueBallPocketed =
-        false;
-
-    firstBallHit =
-        null;
-
-
-    currentShotId =
-        null;
+    shotId++;
 
 
     updateTurnUI();
-
-
-    /*
-       Send final authoritative state.
-    */
 
     broadcastState();
 
@@ -2961,7 +2790,7 @@ function updateTimer() {
 
 
     /*
-       Only Host can timeout.
+       Only Host controls timeout.
     */
 
     if (
@@ -2975,9 +2804,9 @@ function updateTimer() {
     ) {
 
         turn =
-            oppositeSide(
-                turn
-            );
+            turn === "host"
+                ? "guest"
+                : "host";
 
 
         turnStartedAt =
@@ -2994,7 +2823,6 @@ function updateTimer() {
 
         updateTurnUI();
 
-
         broadcastState();
 
     }
@@ -3003,7 +2831,7 @@ function updateTimer() {
 
 
 /* =========================================================
-   UPDATE TURN UI
+   TURN UI
 ========================================================= */
 
 function updateTurnUI() {
@@ -3105,7 +2933,7 @@ function finishGame(
         false;
 
 
-    localPrediction =
+    guestPredicting =
         false;
 
 
@@ -3113,10 +2941,6 @@ function finishGame(
         winnerSide
     );
 
-
-    /*
-       Send game-over command.
-    */
 
     sendMessage({
 
@@ -3128,10 +2952,6 @@ function finishGame(
 
     });
 
-
-    /*
-       Send final state.
-    */
 
     broadcastState();
 
@@ -3245,7 +3065,10 @@ function broadcastState() {
             shotInProgress,
 
         shotId:
-            currentShotId
+            shotId,
+
+        serverTime:
+            Date.now()
 
     });
 
@@ -3267,7 +3090,7 @@ function sendMessage(data) {
 
     ) {
 
-        return false;
+        return;
 
     }
 
@@ -3280,19 +3103,14 @@ function sendMessage(data) {
             )
         );
 
-
-        return true;
-
     }
+
     catch (error) {
 
         console.error(
             "WebRTC send error:",
             error
         );
-
-
-        return false;
 
     }
 
@@ -3319,24 +3137,23 @@ function handleNetworkMessage(
     ) {
 
 
-        /* =================================================
-           SHOT COMMAND
-        ================================================= */
+        /* ================================================
+           GUEST SHOT
+        ================================================ */
 
         case "shot": {
 
-            const shotId =
-                message.shotId;
+            if (!isHost) {
 
+                return;
 
-            /*
-               Ignore duplicate shot.
-            */
+            }
+
 
             if (
-                shotId &&
-                shotId ===
-                lastReceivedShotId
+                turn !== "guest" ||
+                shotInProgress ||
+                gameFinished
             ) {
 
                 return;
@@ -3344,123 +3161,50 @@ function handleNetworkMessage(
             }
 
 
-            if (shotId) {
-
-                lastReceivedShotId =
-                    shotId;
-
-            }
-
-
             /*
-               GUEST receives Host shot.
+               Validate values.
             */
 
-            if (!isHost) {
+            const angle =
+                Number(
+                    message.angle
+                );
 
-                if (
-                    gameFinished ||
-                    shotInProgress
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                   Verify expected shooter.
-                */
-
-                if (
-                    message.shooter !==
-                    turn
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                   Start local physics immediately.
-                */
-
-                startLocalShot(
-
-                    Number(
-                        message.angle
-                    ),
-
-                    Number(
-                        message.power
-                    ),
-
-                    message.shooter,
-
-                    shotId
-
+            const shotPower =
+                Number(
+                    message.power
                 );
 
 
-                updateTurnUI();
+            if (
+                !Number.isFinite(angle) ||
+                !Number.isFinite(shotPower)
+            ) {
+
+                return;
 
             }
 
 
-            /*
-               HOST receives Guest shot.
-            */
-
-            else {
-
-                if (
-                    message.shooter !==
-                    "guest"
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    turn !==
-                    "guest"
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    shotInProgress ||
-                    gameFinished
-                ) {
-
-                    return;
-
-                }
-
-
-                executeShot(
-
-                    Number(
-                        message.angle
-                    ),
-
-                    Number(
-                        message.power
-                    ),
-
-                    "guest",
-
-                    shotId
-
+            const safePower =
+                Math.max(
+                    0.03,
+                    Math.min(
+                        1,
+                        shotPower
+                    )
                 );
 
-            }
+
+            executeShot(
+
+                angle,
+
+                safePower,
+
+                "guest"
+
+            );
 
 
             break;
@@ -3468,15 +3212,11 @@ function handleNetworkMessage(
         }
 
 
-        /* =================================================
+        /* ================================================
            HOST STATE
-        ================================================= */
+        ================================================ */
 
         case "state": {
-
-            /*
-               Host ignores its own states.
-            */
 
             if (isHost) {
 
@@ -3486,47 +3226,51 @@ function handleNetworkMessage(
 
 
             /*
-               Save authoritative state.
+               Ignore very old states.
             */
+
+            if (
+                typeof message.shotId ===
+                "number" &&
+
+                message.shotId <
+                lastStateReceived
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                typeof message.shotId ===
+                "number"
+            ) {
+
+                lastStateReceived =
+                    message.shotId;
+
+            }
+
 
             applyBalls(
                 message.balls
             );
 
 
-            /*
-               IMPORTANT:
-               If Host says the shot is over,
-               hard-sync immediately.
-
-               This removes prediction drift.
-            */
-
-            if (
-                message.shotInProgress ===
-                false
-            ) {
-
-                hardSyncBalls(
-                    message.balls
-                );
-
-            }
-
-
             turn =
-                message.turn;
+                message.turn ||
+                turn;
 
 
             turnStartedAt =
-                message.turnStartedAt;
+                message.turnStartedAt ||
+                turnStartedAt;
 
 
             playerGroups =
-                message.groups || {
-                    host: null,
-                    guest: null
-                };
+                message.groups ||
+                playerGroups;
 
 
             gameFinished =
@@ -3546,13 +3290,53 @@ function handleNetworkMessage(
                 );
 
 
-            currentShotId =
-                message.shotId ||
-                currentShotId;
+            /*
+               If Host has confirmed the
+               shot has finished, prediction
+               is no longer needed.
+            */
+
+            if (
+                !shotInProgress
+            ) {
+
+                guestPredicting =
+                    false;
+
+            }
+
+
+            /*
+               If Host started a new shot,
+               Guest should predict it too.
+
+               This covers the case where
+               the opponent shoots.
+            */
+
+            if (
+                shotInProgress &&
+                !guestPredicting
+            ) {
+
+                /*
+                   We already received the
+                   authoritative velocities.
+
+                   Continue local simulation.
+                */
+
+                guestPredicting =
+                    true;
+
+            }
 
 
             aiming =
                 false;
+
+
+            reconcileGuestBalls();
 
 
             updateTurnUI();
@@ -3572,9 +3356,9 @@ function handleNetworkMessage(
         }
 
 
-        /* =================================================
+        /* ================================================
            CHAT
-        ================================================= */
+        ================================================ */
 
         case "chat": {
 
@@ -3595,9 +3379,9 @@ function handleNetworkMessage(
         }
 
 
-        /* =================================================
+        /* ================================================
            GAME OVER
-        ================================================= */
+        ================================================ */
 
         case "gameOver": {
 
@@ -3613,7 +3397,7 @@ function handleNetworkMessage(
                 false;
 
 
-            localPrediction =
+            guestPredicting =
                 false;
 
 
@@ -3890,10 +3674,6 @@ function createPeer() {
         };
 
 
-    /*
-       ICE connection state.
-    */
-
     peer.oniceconnectionstatechange =
         () => {
 
@@ -3941,13 +3721,14 @@ function setupDataChannel(
 
 
             /*
-               Host creates the game
-               only once.
+               Host creates the game.
             */
 
             if (isHost) {
 
-                if (!balls.length) {
+                if (
+                    balls.length === 0
+                ) {
 
                     createInitialBalls();
 
@@ -3962,10 +3743,11 @@ function setupDataChannel(
                     Date.now();
 
 
+                shotId =
+                    0;
+
+
                 broadcastState();
-
-
-                updateTurnUI();
 
             }
 
@@ -4010,6 +3792,7 @@ function setupDataChannel(
                 );
 
             }
+
             catch (error) {
 
                 console.error(
@@ -4062,13 +3845,12 @@ async function startHostWebRTC() {
     createPeer();
 
 
-    /*
-       Host creates DataChannel.
-    */
-
     dataChannel =
         peer.createDataChannel(
-            "pool"
+            "pool",
+            {
+                ordered: true
+            }
         );
 
 
@@ -4123,10 +3905,6 @@ async function startHostWebRTC() {
     );
 
 
-    /*
-       Wait for Guest answer.
-    */
-
     signalingUnsubscribe =
         onSnapshot(
 
@@ -4166,10 +3944,11 @@ async function startHostWebRTC() {
                         );
 
                     }
+
                     catch (error) {
 
                         console.error(
-                            "Host remote description error:",
+                            "Remote answer error:",
                             error
                         );
 
@@ -4192,10 +3971,6 @@ async function startGuestWebRTC() {
 
     createPeer();
 
-
-    /*
-       Guest waits for Host DataChannel.
-    */
 
     peer.ondatachannel =
         event => {
@@ -4292,6 +4067,7 @@ async function startGuestWebRTC() {
                         );
 
                     }
+
                     catch (error) {
 
                         console.error(
@@ -4311,7 +4087,7 @@ async function startGuestWebRTC() {
 
 
 /* =========================================================
-   WAIT FOR ICE GATHERING
+   WAIT FOR ICE
 ========================================================= */
 
 function waitForIceGathering(
@@ -4333,38 +4109,6 @@ function waitForIceGathering(
             }
 
 
-            let finished =
-                false;
-
-
-            const finish =
-                () => {
-
-                    if (finished) {
-
-                        return;
-
-                    }
-
-
-                    finished =
-                        true;
-
-
-                    pc.removeEventListener(
-
-                        "icegatheringstatechange",
-
-                        check
-
-                    );
-
-
-                    resolve();
-
-                };
-
-
             const check =
                 () => {
 
@@ -4375,7 +4119,16 @@ function waitForIceGathering(
 
                     ) {
 
-                        finish();
+                        pc.removeEventListener(
+
+                            "icegatheringstatechange",
+
+                            check
+
+                        );
+
+
+                        resolve();
 
                     }
 
@@ -4394,12 +4147,13 @@ function waitForIceGathering(
             /*
                Safety timeout.
 
-               Some browsers can get stuck
-               waiting for ICE gathering.
+               Some browsers/networks
+               can keep ICE gathering
+               open for too long.
             */
 
             setTimeout(
-                finish,
+                resolve,
                 5000
             );
 
@@ -4423,7 +4177,9 @@ async function loadRoom() {
             );
 
 
-        if (!snapshot.exists()) {
+        if (
+            !snapshot.exists()
+        ) {
 
             if (messageElement) {
 
@@ -4457,6 +4213,7 @@ async function loadRoom() {
                 "Opponent";
 
         }
+
         else {
 
             opponentId =
@@ -4484,18 +4241,7 @@ async function loadRoom() {
         );
 
 
-        /*
-           HOST.
-        */
-
         if (isHost) {
-
-            /*
-               Initialize locally.
-            */
-
-            createInitialBalls();
-
 
             turn =
                 "host";
@@ -4505,25 +4251,25 @@ async function loadRoom() {
                 Date.now();
 
 
-            updateTurnUI();
+            /*
+               Host owns initial state.
+            */
+
+            createInitialBalls();
 
 
             await startHostWebRTC();
 
         }
 
-
-        /*
-           GUEST.
-        */
-
         else {
 
             /*
-               Guest does NOT create balls.
-
-               It waits for Host's first state.
+               Guest waits for Host state.
             */
+
+            balls = [];
+
 
             await startGuestWebRTC();
 
@@ -4533,6 +4279,7 @@ async function loadRoom() {
         updateTurnUI();
 
     }
+
     catch (error) {
 
         console.error(
@@ -4606,7 +4353,7 @@ resizeCanvas();
 
 
 /* =========================================================
-   SCREEN -> TABLE
+   SCREEN TO TABLE
 ========================================================= */
 
 function screenToTable(
@@ -4660,139 +4407,78 @@ function screenToTable(
    GAME LOOP
 ========================================================= */
 
-function gameLoop(now) {
+function gameLoop(
+    now
+) {
 
-    /*
-       Real frame delta in milliseconds.
-    */
+    let realDelta =
+        (
+            now -
+            lastFrameTime
+        ) /
+        1000;
 
-    let frameDelta =
-        now -
-        lastTime;
 
-
-    lastTime =
+    lastFrameTime =
         now;
 
 
     /*
-       Protect against tab switching,
-       lag spikes, etc.
+       Prevent huge frame jumps.
     */
 
-    frameDelta =
+    realDelta =
         Math.min(
-            frameDelta,
-            MAX_FRAME_DELTA
+            realDelta,
+            0.10
         );
 
 
     /*
-       Convert to physics frame units.
+       HOST:
 
-       16.67ms = 1 physics unit.
-    */
-
-    physicsAccumulator +=
-        frameDelta /
-        16.6666667;
-
-
-    /*
-       Fixed physics.
-
-       BOTH HOST AND GUEST RUN THIS.
-    */
-
-    let physicsSteps =
-        0;
-
-
-    while (
-
-        physicsAccumulator >=
-        FIXED_DT &&
-
-        physicsSteps <
-        MAX_PHYSICS_STEPS
-
-    ) {
-
-        updatePhysics(
-            FIXED_DT
-        );
-
-
-        physicsAccumulator -=
-            FIXED_DT;
-
-
-        physicsSteps++;
-
-    }
-
-
-    /*
-       Guest receives authoritative
-       corrections from Host.
-    */
-
-    if (!isHost) {
-
-        interpolateRemoteBalls();
-
-    }
-
-
-    /*
-       Host sends frequent state updates.
+       authoritative physics.
     */
 
     if (isHost) {
 
-        const networkNow =
-            performance.now();
-
-
-        if (
-
-            networkNow -
-            lastNetworkUpdate >=
-            NETWORK_UPDATE_RATE
-
-        ) {
-
-            lastNetworkUpdate =
-                networkNow;
-
-
-            if (shotInProgress) {
-
-                broadcastState();
-
-            }
-
-        }
+        updatePhysics(
+            realDelta
+        );
 
     }
 
+    else {
 
-    /*
-       Host alone decides when the
-       shot has completely stopped.
-    */
+        /*
+           GUEST:
 
-    if (
+           run local prediction
+           immediately.
 
-        isHost &&
+           This means when Guest shoots,
+           balls start moving on the
+           Guest's screen without waiting
+           for Host.
+        */
 
-        shotInProgress &&
+        if (
+            shotInProgress &&
+            guestPredicting
+        ) {
 
-        !hasMovingBalls()
+            updatePhysics(
+                realDelta
+            );
 
-    ) {
+        }
 
-        finishShot();
+
+        /*
+           Smooth correction from Host.
+        */
+
+        reconcileGuestBalls();
 
     }
 
@@ -4827,7 +4513,6 @@ function draw() {
     const width =
         rect.width;
 
-
     const height =
         rect.height;
 
@@ -4838,16 +4523,6 @@ function draw() {
         width,
         height
     );
-
-
-    if (
-        width <= 0 ||
-        height <= 0
-    ) {
-
-        return;
-
-    }
 
 
     const scaleX =
@@ -4876,7 +4551,9 @@ function draw() {
         const ball of balls
     ) {
 
-        if (!ball.pocketed) {
+        if (
+            !ball.pocketed
+        ) {
 
             drawBall(
                 ball
@@ -5102,8 +4779,7 @@ function drawTable() {
     */
 
     for (
-        const pocket
-        of pockets
+        const pocket of pockets
     ) {
 
         const gradient =
@@ -5144,6 +4820,7 @@ function drawTable() {
             pocket.x,
             pocket.y,
             POCKET_RADIUS,
+
             0,
             Math.PI * 2
 
@@ -5161,7 +4838,9 @@ function drawTable() {
    DRAW BALL
 ========================================================= */
 
-function drawBall(ball) {
+function drawBall(
+    ball
+) {
 
     const radius =
         BALL_RADIUS;
@@ -5198,7 +4877,7 @@ function drawBall(ball) {
 
 
     /*
-       Ball.
+       Main ball.
     */
 
     if (
@@ -5217,6 +4896,7 @@ function drawBall(ball) {
             ball.x,
             ball.y,
             radius,
+
             0,
             Math.PI * 2
 
@@ -5247,6 +4927,7 @@ function drawBall(ball) {
             ball.x,
             ball.y,
             radius,
+
             0,
             Math.PI * 2
 
@@ -5267,6 +4948,7 @@ function drawBall(ball) {
             ball.x,
             ball.y,
             radius,
+
             0,
             Math.PI * 2
 
@@ -5284,11 +4966,18 @@ function drawBall(ball) {
 
         ctx.fillRect(
 
-            ball.x - radius,
-            ball.y - radius * 0.48,
+            ball.x -
+            radius,
 
-            radius * 2,
-            radius * 0.96
+            ball.y -
+            radius *
+            0.48,
+
+            radius *
+            2,
+
+            radius *
+            0.96
 
         );
 
@@ -5314,6 +5003,7 @@ function drawBall(ball) {
             ball.x,
             ball.y,
             radius,
+
             0,
             Math.PI * 2
 
@@ -5337,6 +5027,7 @@ function drawBall(ball) {
         ball.x,
         ball.y,
         radius,
+
         0,
         Math.PI * 2
 
@@ -5373,7 +5064,9 @@ function drawBall(ball) {
 
             ball.x,
             ball.y,
-            radius * 0.45,
+            radius *
+            0.45,
+
             0,
             Math.PI * 2
 
@@ -5412,17 +5105,19 @@ function drawBall(ball) {
 
 
     /*
-       Highlight.
+       Reflection.
     */
 
     const highlight =
         ctx.createRadialGradient(
 
             ball.x -
-                radius * 0.35,
+            radius *
+            0.35,
 
             ball.y -
-                radius * 0.35,
+            radius *
+            0.35,
 
             1,
 
@@ -5464,6 +5159,7 @@ function drawBall(ball) {
         ball.x,
         ball.y,
         radius,
+
         0,
         Math.PI * 2
 
@@ -5509,7 +5205,6 @@ function drawAim() {
         cue.x -
         aimCurrent.x;
 
-
     let dy =
         cue.y -
         aimCurrent.y;
@@ -5522,7 +5217,9 @@ function drawAim() {
         );
 
 
-    if (distance < 1) {
+    if (
+        distance < 1
+    ) {
 
         return;
 
@@ -5532,7 +5229,6 @@ function drawAim() {
     const nx =
         -dx /
         distance;
-
 
     const ny =
         -dy /
@@ -5571,10 +5267,12 @@ function drawAim() {
     ctx.lineTo(
 
         cue.x +
-        nx * 350,
+        nx *
+        350,
 
         cue.y +
-        ny * 350
+        ny *
+        350
 
     );
 
@@ -5609,10 +5307,12 @@ function drawAim() {
     ctx.moveTo(
 
         cue.x -
-        nx * 35,
+        nx *
+        35,
 
         cue.y -
-        ny * 35
+        ny *
+        35
 
     );
 
@@ -5621,16 +5321,20 @@ function drawAim() {
 
         cue.x -
         nx *
+
         (
             100 +
-            power * 120
+            power *
+            120
         ),
 
         cue.y -
         ny *
+
         (
             100 +
-            power * 120
+            power *
+            120
         )
 
     );
@@ -5680,12 +5384,7 @@ window.addEventListener(
 
         if (peer) {
 
-            try {
-
-                peer.close();
-
-            }
-            catch (_) {}
+            peer.close();
 
         }
 
