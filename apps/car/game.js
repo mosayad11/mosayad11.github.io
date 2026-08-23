@@ -522,10 +522,10 @@ function checkCollision(
      */
 
     const playerPaddingX = 3;
-    const playerPaddingY = 5;
+    const playerPaddingY = 3;
 
     const enemyPaddingX = 3;
-    const enemyPaddingY = 5;
+    const enemyPaddingY = 3;
 
 
     const playerLeft =
