@@ -839,31 +839,24 @@ function sendInitialState() {
 
 function handleNetworkMessage(message) {
 
-    switch (
-        message.type
-    ) {
-
-
-        /* =================================================
-           SHOT
-        ================================================= */
+    switch (message.type) {
 
         case "shot":
 
+            // Only the host executes physics.
             if (!isHost) {
-
                 return;
             }
 
-
-            if (
-                turn !==
-                "guest"
-            ) {
-
+            // Guest is allowed to shoot only
+            // when it is actually the guest's turn.
+            if (turn !== "guest") {
                 return;
             }
 
+            if (shotInProgress) {
+                return;
+            }
 
             executeShot(
                 message.angle,
@@ -873,85 +866,52 @@ function handleNetworkMessage(message) {
             break;
 
 
-        /* =================================================
-           STATE
-        ================================================= */
-
         case "state":
 
-            if (
-                isHost
-            ) {
-
-                return;
-            }
-
-
-            applyBalls(
-                message.balls
-            );
-
-
-            turn =
-                message.turn;
-
-
-            turnStartedAt =
-                message.turnStartedAt ||
-                Date.now();
-
-
-            playerGroups =
-                message.groups ||
-                playerGroups;
-
-
-            gameFinished =
-                message.gameFinished;
-
-
-            winner =
-                message.winner;
-
-
-            updateTurnUI();
-
-            break;
-
-
-        /* =================================================
-           SHOT RESULT
-        ================================================= */
-
-        case "shotResult":
-
-            if (
-                !isHost
-            ) {
+            if (!isHost) {
 
                 applyBalls(
                     message.balls
                 );
 
-
                 turn =
                     message.turn;
-
 
                 turnStartedAt =
                     message.turnStartedAt;
 
-
                 playerGroups =
-                    message.groups;
-
+                    message.groups ||
+                    playerGroups;
 
                 gameFinished =
                     message.gameFinished;
 
-
                 winner =
                     message.winner;
+
+
+                shotInProgress =
+                    Boolean(
+                        message.shotInProgress
+                    );
+
+
+                /*
+                If it is now our turn and
+                there is no active shot,
+                unlock controls.
+                */
+
+                if (
+                    turn === "guest" &&
+                    !message.shotInProgress
+                ) {
+
+                    shotInProgress =
+                        false;
+
+                }
 
 
                 updateTurnUI();
@@ -960,18 +920,15 @@ function handleNetworkMessage(message) {
 
             break;
 
-
-        /* =================================================
-           GAME OVER
-        ================================================= */
-
         case "gameOver":
 
-            gameFinished =
-                true;
+            gameFinished = true;
 
             winner =
                 message.winner;
+
+            shotInProgress =
+                false;
 
             showGameOver(
                 winner
@@ -982,7 +939,6 @@ function handleNetworkMessage(message) {
     }
 
 }
-
 
 /* =========================================================
    HOST CREATE CONNECTION
@@ -1745,12 +1701,10 @@ function shoot(
 
 
     /*
-       Host executes physics.
+       HOST
     */
 
-    if (
-        isHost
-    ) {
+    if (isHost) {
 
         executeShot(
             angle,
@@ -1762,8 +1716,7 @@ function shoot(
 
 
     /*
-       Guest sends only the
-       shot command.
+       GUEST
     */
 
     sendMessage({
@@ -1795,10 +1748,7 @@ function executeShot(
     powerAmount
 ) {
 
-    if (
-        shotInProgress
-    ) {
-
+    if (shotInProgress) {
         return;
     }
 
@@ -1808,13 +1758,11 @@ function executeShot(
 
 
     if (!cue) {
-
         return;
     }
 
 
-    shotInProgress =
-        true;
+    shotInProgress = true;
 
 
     cue.vx =
@@ -1833,9 +1781,12 @@ function executeShot(
         "Shot taken!";
 
 
-    if (
-        isHost
-    ) {
+    /*
+       Send immediately that the shot
+       has started.
+    */
+
+    if (isHost) {
 
         broadcastState();
 
@@ -2399,34 +2350,24 @@ function pocketBall(ball) {
 
 function finishShot() {
 
-    if (
-        !shotInProgress
-    ) {
-
+    if (!shotInProgress) {
         return;
     }
 
-
-    shotInProgress =
-        false;
+    shotInProgress = false;
 
 
     /*
-       Change turn.
+       Change turn
     */
 
-    if (
-        turn ===
-        "host"
-    ) {
+    if (turn === "host") {
 
-        turn =
-            "guest";
+        turn = "guest";
 
     } else {
 
-        turn =
-            "host";
+        turn = "host";
 
     }
 
@@ -2438,9 +2379,12 @@ function finishShot() {
     updateTurnUI();
 
 
-    if (
-        isHost
-    ) {
+    /*
+       Host sends the final state
+       after the balls completely stop.
+    */
+
+    if (isHost) {
 
         broadcastState();
 
@@ -2457,8 +2401,7 @@ function broadcastState() {
 
     sendMessage({
 
-        type:
-            "state",
+        type: "state",
 
         balls:
             serializeBalls(),
@@ -2476,7 +2419,10 @@ function broadcastState() {
             gameFinished,
 
         winner:
-            winner
+            winner,
+
+        shotInProgress:
+            shotInProgress
 
     });
 
