@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    >
+
+    <title>Mosayad 8 Ball Pool</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- HEADER -->
+        <header class="topbar">
+
+            <a href="../../index.html" class="back-button">
+                <span>←</span>
+                <span class="back-text">Mosayad Apps</span>
+            </a>
+
+            <div class="logo">
+                <div class="logo-ball">8</div>
+
+                <div class="logo-text">
+                    <strong>8 BALL POOL</strong>
+                    <small>ONLINE</small>
+                </div>
+            </div>
+
+            <button
+                id="themeButton"
+                class="theme-button"
+                title="Change theme"
+            >
+                🌙
+            </button>
+
+        </header>
+
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- USER INFO -->
+            <section class="user-card">
+
+                <div class="avatar" id="avatar">
+                    ?
+                </div>
+
+                <div class="user-info">
+
+                    <span class="small-label">
+                        PLAYING AS
+                    </span>
+
+                    <strong id="playerName">
+                        Loading...
+                    </strong>
+
+                    <span
+                        id="connectionStatus"
+                        class="connection-status"
+                    >
+                        Connecting...
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- LOBBY -->
+            <section id="lobby" class="lobby">
+
+                <div class="hero">
+
+                    <div class="pool-icon">
+                        🎱
+                    </div>
+
+                    <h1>
+                        8 Ball Pool
+                    </h1>
+
+                    <p>
+                        Play online against another player.
+                    </p>
+
+                </div>
+
+
+                <!-- MAIN ACTIONS -->
+                <div class="actions">
+
+                    <button
+                        id="createRoomButton"
+                        class="primary-button"
+                    >
+                        <span class="button-icon">＋</span>
+
+                        <span>
+                            <strong>Create Room</strong>
+                            <small>Start a new match</small>
+                        </span>
+                    </button>
+
+
+                    <button
+                        id="openRoomsButton"
+                        class="secondary-button"
+                    >
+                        <span class="button-icon">☰</span>
+
+                        <span>
+                            <strong>Open Rooms</strong>
+                            <small>Find a player</small>
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <!-- CURRENT ROOM -->
+                <section
+                    id="currentRoom"
+                    class="current-room hidden"
+                >
+
+                    <div class="room-header">
+
+                        <div>
+                            <span class="small-label">
+                                YOUR ROOM
+                            </span>
+
+                            <h2 id="currentRoomId">
+                                ------
+                            </h2>
+                        </div>
+
+                        <div class="waiting-dot"></div>
+
+                    </div>
+
+
+                    <div class="waiting-message">
+
+                        <div class="loader"></div>
+
+                        <div>
+                            <strong id="roomStatusText">
+                                Waiting for opponent
+                            </strong>
+
+                            <span>
+                                Open Rooms will show your room
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        id="cancelRoomButton"
+                        class="danger-button"
+                    >
+                        Cancel Room
+                    </button>
+
+                </section>
+
+
+                <!-- ROOMS -->
+                <section
+                    id="roomsSection"
+                    class="rooms-section hidden"
+                >
+
+                    <div class="section-title">
+
+                        <div>
+                            <h2>
+                                Open Rooms
+                            </h2>
+
+                            <span>
+                                Players waiting for an opponent
+                            </span>
+                        </div>
+
+                        <button
+                            id="refreshRoomsButton"
+                            class="refresh-button"
+                            title="Refresh"
+                        >
+                            ↻
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="roomsList"
+                        class="rooms-list"
+                    >
+                    </div>
+
+
+                    <div
+                        id="noRooms"
+                        class="no-rooms"
+                    >
+
+                        <div>
+                            🎱
+                        </div>
+
+                        <strong>
+                            No open rooms
+                        </strong>
+
+                        <span>
+                            Create a room and wait for another player.
+                        </span>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+
+            <!-- CONNECTING SCREEN -->
+            <section
+                id="connectingScreen"
+                class="fullscreen-panel hidden"
+            >
+
+                <div class="connecting-card">
+
+                    <div class="big-loader"></div>
+
+                    <h2>
+                        Connecting...
+                    </h2>
+
+                    <p id="connectingText">
+                        Joining the room
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- GAME READY SCREEN -->
+            <section
+                id="gameReadyScreen"
+                class="fullscreen-panel hidden"
+            >
+
+                <div class="ready-card">
+
+                    <div class="ready-icon">
+                        🎱
+                    </div>
+
+                    <span class="small-label">
+                        MATCH FOUND
+                    </span>
+
+                    <h2>
+                        You're playing against
+                    </h2>
+
+                    <div
+                        id="opponentName"
+                        class="opponent-name"
+                    >
+                        Opponent
+                    </div>
+
+                    <div class="player-vs">
+
+                        <div class="mini-player">
+
+                            <div
+                                id="readyYourAvatar"
+                                class="mini-avatar"
+                            >
+                                ?
+                            </div>
+
+                            <span id="readyYourName">
+                                You
+                            </span>
+
+                        </div>
+
+                        <div class="vs">
+                            VS
+                        </div>
+
+                        <div class="mini-player">
+
+                            <div
+                                id="readyOpponentAvatar"
+                                class="mini-avatar opponent"
+                            >
+                                ?
+                            </div>
+
+                            <span id="readyOpponentName">
+                                Opponent
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="ready-badge">
+                        ✓ Room connected
+                    </div>
+
+                    <button
+                        id="backToLobbyButton"
+                        class="primary-button small"
+                    >
+                        Back to Lobby
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- TOAST -->
+            <div
+                id="toast"
+                class="toast"
+            >
+            </div>
+
+        </main>
+
+
+        <footer>
+            Mosayad Apps • 8 Ball Pool Online
+        </footer>
+
+    </div>
+
+
+    <script type="module" src="game.js"></script>
+
+</body>
+</html>
