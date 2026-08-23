@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>Mosayad 8 Ball Pool</title>
+
+    <link
+        rel="stylesheet"
+        href="match.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-ball">
+                8
+            </div>
+
+            <div>
+                <strong>
+                    MOSAYAD
+                </strong>
+
+                <span>
+                    8 BALL POOL
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="connection">
+
+            <span
+                id="connectionDot"
+                class="dot offline"
+            ></span>
+
+            <span id="connectionText">
+                Connecting...
+            </span>
+
+        </div>
+
+
+        <button
+            id="themeButton"
+            class="icon-button"
+            title="Change theme"
+        >
+            🌙
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         GAME AREA
+    ====================================================== -->
+
+    <main class="game-wrapper">
+
+
+        <!-- PLAYER 1 -->
+
+        <section
+            id="playerTop"
+            class="player-card"
+        >
+
+            <div class="player-avatar">
+                ?
+            </div>
+
+            <div class="player-info">
+
+                <strong id="opponentName">
+                    Opponent
+                </strong>
+
+                <span>
+                    Opponent
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- TIMER -->
+
+        <div
+            id="timer"
+            class="timer"
+        >
+            60
+        </div>
+
+
+        <!-- TURN -->
+
+        <div
+            id="turnText"
+            class="turn-text"
+        >
+            Connecting...
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+            id="tableContainer"
+            class="table-container"
+        >
+
+            <canvas
+                id="poolCanvas"
+            ></canvas>
+
+        </div>
+
+
+        <!-- PLAYER 2 -->
+
+        <section
+            id="playerBottom"
+            class="player-card me"
+        >
+
+            <div class="player-avatar">
+                ?
+            </div>
+
+            <div class="player-info">
+
+                <strong id="myName">
+                    You
+                </strong>
+
+                <span>
+                    You
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- POWER -->
+
+        <div
+            id="powerContainer"
+            class="power-container"
+        >
+
+            <span>
+                POWER
+            </span>
+
+            <div class="power-bar">
+
+                <div
+                    id="powerFill"
+                    class="power-fill"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <!-- GAME OVER -->
+
+        <div
+            id="gameOver"
+            class="game-over hidden"
+        >
+
+            <div class="game-over-card">
+
+                <div
+                    id="winnerIcon"
+                    class="winner-icon"
+                >
+                    🏆
+                </div>
+
+                <h2 id="winnerTitle">
+                    You Win!
+                </h2>
+
+                <p id="winnerText">
+                    Great game!
+                </p>
+
+                <button
+                    id="leaveButton"
+                >
+                    Back to Lobby
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         AIM HELP
+    ====================================================== -->
+
+    <div
+        id="aimHint"
+        class="aim-hint"
+    >
+        Drag from the cue ball to aim and shoot
+    </div>
+
+
+    <script
+        type="module"
+        src="match.js"
+    ></script>
+
+</body>
+
+</html>

@@ -981,50 +981,41 @@ function listenToCurrentRoom(roomId) {
 
 
                 /* =========================
-                   PLAYING
+                PLAYING
                 ========================= */
 
                 if (
-                    data.status ===
-                    "playing"
+                    data.status === "playing"
                 ) {
 
                     currentRoom.classList.add(
                         "hidden"
                     );
 
-
-                    let opponentName;
-
-
                     if (
-                        data.hostId ===
-                        currentUserId
+                        data.hostId &&
+                        data.guestId
                     ) {
 
-                        opponentName =
-                            data.guestName;
+                        connectingScreen.classList.remove(
+                            "hidden"
+                        );
 
-                    } else {
-
-                        opponentName =
-                            data.hostName;
-                    }
+                        connectingText.textContent =
+                            "Starting match...";
 
 
-                    if (
-                        opponentName
-                    ) {
+                        setTimeout(
+                            () => {
 
-                        showGameReady(
-                            opponentName
+                                goToMatch(
+                                    roomId
+                                );
+
+                            },
+                            500
                         );
                     }
-
-
-                    connectingScreen.classList.add(
-                        "hidden"
-                    );
                 }
 
             },
@@ -1043,50 +1034,15 @@ function listenToCurrentRoom(roomId) {
         );
 }
 
-
 /* =========================================================
-   GAME READY
+   GO TO MATCH
    ========================================================= */
 
-function showGameReady(opponentName) {
+function goToMatch(roomId) {
 
-    opponentName =
-        opponentName ||
-        "Player";
-
-
-    opponentNameElement.textContent =
-        opponentName;
-
-
-    readyOpponentName.textContent =
-        opponentName;
-
-
-    readyOpponentAvatar.textContent =
-        getInitial(
-            opponentName
-        );
-
-
-    readyYourName.textContent =
-        currentUserName;
-
-
-    readyYourAvatar.textContent =
-        getInitial(
-            currentUserName
-        );
-
-
-    connectingScreen.classList.add(
-        "hidden"
-    );
-
-
-    gameReadyScreen.classList.remove(
-        "hidden"
-    );
+    window.location.href =
+        "match.html?room=" +
+        encodeURIComponent(roomId);
 }
 
 
@@ -1180,43 +1136,6 @@ cancelRoomButton.addEventListener(
                 "Could not cancel the room."
             );
         }
-    }
-);
-
-
-/* =========================================================
-   BACK TO LOBBY
-   ========================================================= */
-
-backToLobbyButton.addEventListener(
-    "click",
-    () => {
-
-        gameReadyScreen.classList.add(
-            "hidden"
-        );
-
-        connectingScreen.classList.add(
-            "hidden"
-        );
-
-
-        /*
-           IMPORTANT:
-
-           We keep currentRoomId here.
-
-           The room is still active and
-           later WebRTC will start from
-           this room.
-
-           For now this only closes
-           the "MATCH FOUND" screen.
-        */
-
-        showToast(
-            "Back to lobby."
-        );
     }
 );
 
