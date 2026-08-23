@@ -27,6 +27,15 @@
     },
 
     {
+        "id": "8_ball_online",
+        "name": "8 Ball Pool Online",
+        "type": "game",
+        "description": "Play the 8 Ball Pool game with your freinds online.",
+        "image": "images/apps/8_ball_online.jpg",
+        "path": "apps/8_ball_online/index.html"
+    },
+
+    {
         "id": "football",
         "name": "Football Penalties",
         "type": "game",
