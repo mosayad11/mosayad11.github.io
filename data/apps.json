@@ -51,5 +51,23 @@
         "description": "A simple and fast calculator that works on any device.",
         "image": "images/apps/calculator.png",
         "path": "apps/calculator/index.html"
+    },
+    
+    {
+        "id": "xo",
+        "name": "XO Game (1v1)",
+        "type": "game",
+        "description": "A simple 1v1 XO game (🔥 Made by Molang 🔥).",
+        "image": "images/apps/xo.png",
+        "path": "apps/xo/index.html"
+    },
+    
+    {
+        "id": "molang",
+        "name": "Molang Website",
+        "type": "app",
+        "description": "Easy Programming Language based on HTML, CSS, and JavaScript with simpler syntax made by Mosayad.",
+        "image": "images/apps/molang.png",
+        "path": "https://mosayad11.github.io/molang/"
     }
 ]
