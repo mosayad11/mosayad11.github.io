@@ -1374,11 +1374,11 @@ async function init() {
        LOGIN
        ----------------------------------------- */
 
-    if (!checkLogin()) {
+    // if (!checkLogin()) {
 
-        return;
+    //     return;
 
-    }
+    // }
 
 
     /* -----------------------------------------
@@ -1463,15 +1463,15 @@ async function init() {
        LOAD FIREBASE DATA
        ----------------------------------------- */
 
-    await Promise.allSettled([
+    // await Promise.allSettled([
 
-        loadCurrentUser(),
+    //     loadCurrentUser(),
 
-        loadUsersCount(),
+    //     loadUsersCount(),
 
-        loadApps()
+    //     loadApps()
 
-    ]);
+    // ]);
 
 
     /* -----------------------------------------
